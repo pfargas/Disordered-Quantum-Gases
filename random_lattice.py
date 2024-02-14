@@ -1,11 +1,12 @@
-import numpy as np
-import matplotlib.pyplot as plt
 import csv
+
+import matplotlib.pyplot as plt
+import numpy as np
 
 
 class RandomLattice:
     def __init__(self, p=0.1, radius=1, spacing=0.04, seed=42):
-        self.n = int(radius / spacing)
+        self.n_points_per_dir = int(radius / spacing)
         self.radius = radius
         self.spacing = spacing
         self.X_lattice, self.Y_lattice = self.generate_circular_lattice()
@@ -14,12 +15,12 @@ class RandomLattice:
         mask = np.random.rand(len(self.X_lattice)) < p
         self.X_dispersors = self.X_lattice[mask]
         self.Y_dispersors = self.Y_lattice[mask]
-        self.n = len(self.X_dispersors)
+        self.n_dispersors = len(self.X_dispersors)
 
     def generate_circular_lattice(self):
 
-        x = np.linspace(-self.radius, self.radius, self.n)
-        y = np.linspace(-self.radius, self.radius, self.n)
+        x = np.linspace(-self.radius, self.radius, self.n_points_per_dir)
+        y = np.linspace(-self.radius, self.radius, self.n_points_per_dir)
         X, Y = np.meshgrid(x, y)
 
         # mask out the points outside the circle
