@@ -5,7 +5,7 @@ import numpy as np
 
 
 class RandomLattice:
-    def __init__(self, p=0.1, radius=1, spacing=0.04, seed=42):
+    def __init__(self, p=0.1, radius=1, spacing=1, seed=42):
         self.n_points_per_dir = int(radius / spacing)
         self.radius = radius
         self.spacing = spacing
