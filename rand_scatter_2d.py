@@ -67,26 +67,26 @@ class Scattering2D:
         self.fill_free_propagator()
         self.intensities = self.compute_intensities()
 
-    # def fill_matrix_v2(self):
-    #     try:
-    #         for i, (x, y) in enumerate(zip(self.lattice.X_dispersors, self.lattice.Y_dispersors)):
-    #             for j, (x_prime, y_prime) in enumerate(zip(self.lattice.X_dispersors, self.lattice.Y_dispersors)):
-    #                 if i == j:
-    #                     self.M_matrix[i, j] = np.log(self.k_moment*self.effective_scattering*np.exp(GAMMA_EULER))-1j*np.pi/2
-    #                 else:
-    #                     self.M_matrix[i, j] = -1j*np.pi/4*hankel1(0, self.k_moment*np.sqrt((x-x_prime)**2+(y-y_prime)**2))
-    #         logging.info('Matrix filled')
-    #     except Exception as e:
-    #         logging.error(e)
-    #     return
+    def fill_matrix_v2(self):
+        try:
+            for i, (x, y) in enumerate(zip(self.lattice.X_dispersors, self.lattice.Y_dispersors)):
+                for j, (x_prime, y_prime) in enumerate(zip(self.lattice.X_dispersors, self.lattice.Y_dispersors)):
+                    if i == j:
+                        self.M_matrix[i, j] = np.log(self.k_moment*self.effective_scattering*np.exp(GAMMA_EULER))-1j*np.pi/2
+                    else:
+                        self.M_matrix[i, j] = -1j*np.pi/4*hankel1(0, self.k_moment*np.sqrt((x-x_prime)**2+(y-y_prime)**2))
+            logging.info('Matrix filled')
+        except Exception as e:
+            logging.error(e)
+        return
 
-    # def fill_matrix(self):
-    #     try:
-    #         self.M_matrix = np.diag(self.diagonal_terms()) + self.off_diagonal_terms()
-    #         logging.info('Matrix filled')
-    #     except Exception as e:
-    #         logging.error(e)
-    #     return
+    def fill_matrix(self):
+        try:
+            self.M_matrix = np.diag(self.diagonal_terms()) + self.off_diagonal_terms()
+            logging.info('Matrix filled')
+        except Exception as e:
+            logging.error(e)
+        return
 
     def fill_free_propagator(self):
         """Method to generate the 2D free propagator
