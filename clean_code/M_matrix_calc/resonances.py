@@ -28,7 +28,6 @@ def resonance(energy, index_eigenval, eigvals, eigvecs, distances, newton=True):
     z_res: float, energy of the resonance (complex!)
     """
     
-    
     k = np.sqrt(2*energy)
     eigval = eigvals[index_eigenval]
     eigvec = eigvecs[:,index_eigenval]
@@ -36,11 +35,8 @@ def resonance(energy, index_eigenval, eigvals, eigvecs, distances, newton=True):
     a_eff = np.exp(-np.real(eigval))
     
     if newton:
-    
         step = newton_step(eigval, eigvec, k, distances)
-        
         return a_eff, energy + step
-
     else:
         return a_eff, energy + 1j*np.imag(eigval)
 def resonances(energy, M_inf,distances):
