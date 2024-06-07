@@ -95,19 +95,30 @@ def compute_resonances_per_energy(energy, length = 70, p=0.1):
 
 def main():
     
+    import json
+    with open("clean_code/inputs.json") as f:
+        inputs = json.load(f)
+    length = inputs["length"]
+    min_energy = inputs["energy"]["min"]
+    max_energy = inputs["energy"]["max"]
+    n_energies = inputs["energy"]["number"]
+    min_ln_a_eff = inputs["ln_a_eff"]["min"]
+    max_ln_a_eff = inputs["ln_a_eff"]["max"]
+    n_ln_a_eff = inputs["ln_a_eff"]["number"] # number of bins in vertical axis
+    occupation_probability = inputs["p"]
+    
     total_a_eff=[]
     total_z_res=[]
-    energies = np.linspace(0.01, 0.4, 50)
-    length = 60
+    energies = np.linspace(min_energy, max_energy, n_energies)
     start = time()
     for energy in energies:
-        a_eff, z_res = compute_resonances_per_energy(energy, length=length)
+        a_eff, z_res = compute_resonances_per_energy(energy, length=length, p=occupation_probability)
         total_a_eff.append(a_eff)
         total_z_res.append(z_res)
     end = time()
     print(f"Time elapsed: {end-start:.2f}")
     # bins = np.linspace(-1.3,1.5, 300)
-    bins = np.linspace(-2,2, 350)
+    bins = np.linspace(min_ln_a_eff,max_ln_a_eff, n_ln_a_eff)
     histogram_total=[]
     for i in range(len(energies)):
         a_eff = total_a_eff[i]
@@ -116,10 +127,10 @@ def main():
         a_eff = np.log(np.array(a_eff[mask]))
         histogram_in_energy = histogram(bins, a_eff)
         histogram_total.append(histogram_in_energy)
-        plt.title(f"Histogram of effective scattering length for energy {energies[i]}")
-        plt.plot(bins, histogram_in_energy)
-        plt.savefig(f"energy{i}")
-        plt.clf()
+        # plt.title(f"Histogram of effective scattering length for energy {energies[i]}")
+        # plt.plot(bins, histogram_in_energy)
+        # plt.savefig(f"energy{i}")
+        # plt.clf()
     
     histogram_total = np.array(histogram_total).T
     delta_energy = energies[1]-energies[0]
