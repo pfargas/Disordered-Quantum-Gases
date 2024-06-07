@@ -1,0 +1,198 @@
+\appendix
+\section{Quantum mechanics formalism}
+
+Quantum mechanics is a fundamental theory in physics that describes the behavior of particles at the atomic and subatomic scales. The theory is based on the postulates of quantum mechanics. TODO(?)
+
+\subsection{Green's function in the mathematical context}
+
+This work has been developed using the \textit{Green's function method} for solving non-homogeneous differential equations. 
+
+Given a differential equation of the form $\mathcal L u(x) = f(x)$, where $\mathcal L$ is a \textit{linear differential operator} acting on distributions over a subset $\Omega$ of the euclidean space $\mathbb R^n$, the Green's function at point $s\in \Omega$ is defined as:
+
+\begin{equation}
+    \mathcal L G(x,s)=\delta(x-s)
+\end{equation}
+
+These functions are a useful tool in wave mechanics, as they can be used to solve differential equations of the form:
+
+\begin{equation}\label{eq:diffeqprob}
+    \mathcal L u(x)=f(x)
+\end{equation}
+
+\begin{theorem}
+    Given a Green's function $G(x,s)$ that corresponds to the linear differential operator $\mathcal{L}(x)$, the solution of the problem \ref{eq:diffeqprob} is given by:
+    \begin{equation}
+        u(x)=\int_\Omega G(x,s) f(s) ds
+    \end{equation}
+\end{theorem}
+
+\begin{proof}
+    Starting from the definition of the Green's function, we can integrate by $\int_\Omega f(s)ds$:
+    \begin{equation}
+        \int_\Omega \mathcal L (x) G(x,s)f(s)ds=\int_\Omega\delta (x-s)f(s)ds
+    \end{equation}
+
+    Given that $\mathcal{L}$ is linear in $x$, and using the properties of the $\delta$ distribution, we have:
+    \begin{equation}
+        \mathcal{L}\int_\Omega G(x,s)f(s)ds=f(x)
+    \end{equation}
+
+    And one can identify that:
+    \begin{equation}
+        u(x)=\int_\Omega G(x,s)f(s)ds
+    \end{equation}
+    
+    Where the Green's function $G(x,s)$ satisfies the same boundary conditions as $u(x)$.
+\end{proof}
+
+An important fact to notice is that if the differential operator's coefficients are constant with respect of the independent variable $x$, the system is transnational invariant and the Green's function is just a function of a single variable:
+
+\begin{equation}
+    G(x,s)=G(x-s)
+\end{equation}
+
+\subsection{Green's function in quantum mechanics: The single particle propagator}
+
+Knowing the Green's function method, we can apply it to the well known time-independent Schrödinger equation in the position representation. Given a Hamiltonian $H_0(\vb r)$, the eigenstates of which are known, we can write the Schrödinger equation as:
+
+\begin{equation}
+    \qty(H_0(\vb r)+V(\vb r)){\Psi_E(\vb r)}=E{\Psi_E(\vb r)}
+\end{equation}
+
+This is a useful representation of the scattering problems, where $H_0(\vb r)$ is the initial Hamiltonian and $V(\vb r)$ would be the potential that scatters the particles. We can rewrite the equation as:
+
+\begin{equation}
+    \qty(E-H_0(\vb r)){\Psi_E(\vb r)}=V(\vb r){\Psi_E(\vb r)}
+\end{equation}
+
+Which is a non-homogeneous differential equation of the form of \cref{eq:diffeqprob}, where the source term is $V(x){\Psi_E(\vb r)}$. The Green's function for the time independent Schrödinger equation is defined as:
+
+\begin{equation}
+    \qty(E-H_0(\vb r))G_0(\vb r,\vb s;E)=\delta(\vb r-\vb s)
+\end{equation}
+
+Where it is natural to define the inverse of $G_0(\vb r,\vb s)$ as the operator $E-H_0(\vb r)$. To be rigurous, the inverse of the Green's function is defined as:
+
+\begin{equation}
+    G_0^{-1}(\vb r,\vb s;E)=\qty(E-H_0(\vb r))\delta(\vb r-\vb s)\equiv G_0^{-1}(\vb r)
+\end{equation}
+
+This representation is just a way of saying that the inverse of the Green's function is diagonal in the position representation. With this definition, we can see that it is in fact the inverse of the Green's function:
+
+\begin{equation}
+    \int_\Omega G_0^{-1}(\vb r,\vb s;E)G_0(\vb s,\vb y;E)ds=\int_\Omega \qty(E-H_0(\vb r))\delta(\vb r-\vb s)G_0(\vb s,\vb y;E)ds=\qty(E-H_0(\vb r))G_0(\vb r,\vb y;E)=\delta(\vb r-\vb y)
+\end{equation}
+
+Then, the Schrödinger equation can be rewritten as:
+
+\begin{equation}\label{eq:schrod_eq_green}
+    \qty(G_0^{-1}(\vb r;E)-V(\vb r)){\Psi_E(\vb r)}=0
+\end{equation}
+
+With:
+
+\begin{equation}\label{eq:inverse_green}
+    G_0^{-1}(\vb r;E)G_0(\vb r,\vb y;E)=\delta(\vb r-\vb y)
+\end{equation}
+
+\begin{proposition}
+    The solution of the Schrödinger equation is given by:
+    \begin{equation}\label{eq:schrod_eq_sol}
+        \Psi_E(\vb r)=\Psi_E^0(\vb r)+\int_\Omega G_0(\vb r,\vb s;E)V(\vb s){\Psi_E(\vb s)}d\vb s
+    \end{equation}
+
+    Where $\Psi_E^0(\vb r)$ is the solution of the homogeneous equation.
+\end{proposition}
+
+\begin{proof}
+    We can substitute the proposed solution (\cref{eq:schrod_eq_sol}) into the Schrödinger equation \cref{eq:schrod_eq_green}:
+    \begin{equation}
+        \qty(G_0^{-1}(\vb r;E)-V(\vb r))\qty(\Psi_E^0(\vb r)+\int_\Omega G_0(\vb r,\vb s;E)V(\vb s){\Psi_E(\vb s)}d\vb s)=0
+    \end{equation}
+
+    Using the definition of $\Psi_E^0(\vb r)$, we can see that:
+    \[G_0^{-1}(\vb r;E)\Psi_E^0(\vb r)=0\]
+    As this is just the homogeneous Schrödinger equation. Then, the expression simplifies to:
+    \begin{equation}
+        \qty(G_0^{-1}(\vb r;E)-V(\vb r))\int_\Omega G_0(\vb r,\vb s;E)V(\vb s){\Psi_E(\vb s)}d\vb s=V(\vb r)\Psi_E^0(\vb r)
+    \end{equation}
+
+    Grouping all terms with the potential $V(\vb r)$, we have:
+
+    \begin{equation}
+        G_0^{-1}(\vb r;E)\qty(\int_\Omega G_0(\vb r,\vb s; E)V(\vb s)\Psi_E(\vb s)d\vb s)=V(\vb r)\underbrace{\qty(\Psi_E^0(\vb r)+\int_\Omega G_0(\vb r,\vb s; E)V(\vb s)\Psi_E(\vb s)d\vb s)}_{\Psi_E(\vb r)}
+    \end{equation}
+
+    And, using \cref{eq:inverse_green}, we have:
+    \begin{equation}
+        \int_\Omega \underbrace{G_0^{-1}(\vb r; E)G_0(\vb r,\vb s; E)}_{\delta(\vb r-\vb s)}V(\vb s)\Psi_E(\vb s)d\vb s=V(\vb r)\Psi_E(\vb r)\qedhere
+    \end{equation}
+\end{proof}
+
+For the time-dependent Schrödinger equation, problem is formulated as:
+
+\begin{equation}\label{eq:td_schrod_eq}
+    \qty(i\partial_t-H_0(\vb r)-V(\vb r)){\Psi(\vb r,t)}=0
+\end{equation}
+
+Now we can define two operators as follows:
+
+\begin{subequations}
+    \begin{align}
+        \qty(i\partial_t-H_0(\vb r))G_0(\vb r,\vb s;t-t')&=\delta(\vb r-\vb s)\delta(t-t')
+        \\
+        \qty(i\partial_t-H_0(\vb r)-V(\vb r))G(\vb r,\vb s;t-t')&=\delta(\vb r-\vb s)\delta(t-t')
+    \end{align}
+\end{subequations}
+
+And, following the diagonal notation, we can identify the inverse operators as:
+
+\begin{align}
+    G_0^{-1}(\vb r,;t)&=i\partial_t-H_0(\vb r)
+    \\
+    G^{-1}(\vb r;t)&=i\partial_t-H_0(\vb r)-V(\vb r)
+\end{align}
+
+Then, we can express the self-consistent equation as:
+
+\begin{align}
+    \Psi(\vb r,t)=\Psi^0(\vb r,t)+\int d\vb r' \int dt' G_0(\vb r,\vb r';t-t')V(\vb r')\Psi(\vb r',t')\label{eq:free_prop_td}\\
+    \Psi(\vb r,t)=\Psi^0(\vb r,t)+\int d\vb r' \int dt' G(\vb r,\vb r';t-t')V(\vb r')\Psi^0(\vb r',t')\label{eq:full_prop_td}
+\end{align}
+
+With these two equations, one can derive the Dyson equation for the Green's function, which is a fundamental equation in quantum mechanics. Dropping the integrals from \cref{eq:free_prop_td}, we have:
+
+\begin{align}
+    \nonumber \Psi &= \Psi^0 + G_0V\Psi^0+ G_0VG_0V\Psi^0+G_0VG_0VG_0V\Psi^0+\ldots\\
+    &= \Psi^0 + (G_0+G_0VG_0+G_0VG_0VG_0+\ldots)V\Psi^0
+\end{align}
+
+And comparing it with \cref{eq:full_prop_td}, we can express the operator $G$ as:
+
+\begin{align}
+    G &= G_0 + G_0VG_0 + G_0VG_0VG_0 + \ldots\\
+    &=G_0 + G_0V (G_0+G_0VG_0+\ldots)
+\end{align}
+
+Wich is just the Dyson equation:
+
+\begin{equation}
+    G = G_0 + G_0VG
+\end{equation}
+
+This new operator $G$ is often called the \textbf{propagator} of the system. This can be seen starting from the time-dependent Schrödinger equation. For this derivation we will use Dirac notation, where the state of the system is represented by a ket $\ket{\alpha,t_0;t}$, where $\alpha$ is the state of the system and $t_0$ is the initial time. The time-dependent Schrödinger equation can be written as:
+
+\begin{equation}
+    i\hbar\partial_t\ket{\alpha,t_0;t}=\hat H\ket{\alpha,t_0;t}
+\end{equation}
+
+Where $\hat H=H_0+V$ is the Hamiltonian operator of the system. The solution of this equation is given by the operator $\hat U(t,t_0) = e^{-\frac{i}{\hbar}\hat H(t-t_0)}$. Following Dirac notation, the wave function can be written as:
+
+\begin{equation}
+    \Psi(\vb r,t)=\bra{\vb r}\hat U(t,t_0)\ket{\Psi(t_0)}
+\end{equation}
+
+SEE THIS KERNEL AS THE PROPAGATOR (MANY BODY QUANTUM THEORY EXPOSED!)
+
+
+

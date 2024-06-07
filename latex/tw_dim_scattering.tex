@@ -1,0 +1,210 @@
+\appendix
+\section{Two dimensional scattering: binary collisions}
+
+In the dilute gas, interactions are well described by a binary collision model, where the interaction Hamiltonian is defined as a sum of two-body terms.
+
+\begin{equation}
+    \hat{H}_{\text{int}} =\frac{1}{2} \sum_{i \neq j} U({\mathbf{r}}_i - {\mathbf{r}}_j)
+\end{equation}
+
+Then it is straightforward that we must begin describing the problem with two bodies interacting via the potential $U(r)$. The study is simplified by the following remarks:
+
+\begin{itemize}
+    \item Dominant interactions are spherically symmetric, so that $U(r)$ actually only depends on $r=|\mathbf{r}|$. Angular momenutm is conserved in a collision, allowing the two-body problem to be treated with eigenstates of the operator $\hat{\mathbf{L}}$. This is the principle of development in partial waves, identified by the angular quantum number $l\in\mathbb N$. Note also that for polarized bosons, the symmetrization of the two-body wave function results in only the even values of $l$ being allowed.
+    \item Atoms are cold so their thermal wavelength $\lambda_T$ is large compared to the size of the potential, which we call $b$. In other words, the wavevectors $\mathbf{k}$ relevant, which are of the order of $\frac{1}{\lambda_T}$, verifies $kb<<1$. Furthermore, the potential decays rapidly at large distances (short range potential). Those two properties, ensure that the essential properties of the collision are described by the \textit{s-waves}, that is to say the state corresponding to a relative angular momentum $l=0$ between the two collisioned particles.
+\end{itemize}
+
+\subsection{Variable separation, diffusion amplitude}
+
+Consider two identical atoms with mass $m$. We can introduce the center of mass variables $\vb{R}$ and $\vb{P}$:
+
+\begin{equation}
+    \vb{R} = \frac{1}{2}(\vb{r}_1 + \vb{r}_2) \quad \quad \vb{P} = \vb{p}_1 + \vb{p}_2
+\end{equation}
+
+and the relative variables $\vb{r}$ and $\vb{p}$:
+
+\begin{equation}
+    \vb{r} = \vb{r}_1 - \vb{r}_2 \quad \quad \vb{p} = \frac{1}{2}(\vb{p}_1 - \vb{p}_2)
+\end{equation}
+
+The Hamiltonian of the system can be separated in two terms:
+
+\begin{equation}
+    \hat{H} = \hat{H}_{CM}+\hat{H}_{rel}, \quad \quad \hat{H}_{CM} = \frac{\hat{P}^2}{2M}, \quad \quad \hat{H}_{rel} = \frac{\hat{p}^2}{2\mu} + U(\vb{r})
+\end{equation}
+
+Where we introduced the total mass $M=2m$ and the reduced mass $\mu = \frac{m}{2}$. The binary collision problem therefore reduces to the problem of a body of reduced mass $\mu$ in the external potential $U(\vb{r})$, described by the Hamiltonian $\hat{H}_{rel}$. This is the problem we will solve in the following.
+
+We will focus on asymptotically free states which describe a diffusion process. the formalism of collision theory tells us that any plane wave $e^{i\vb k\cdot \vb r}$ is an eigenstate of the Hamiltonian
+
+\begin{equation}
+    \hat{H}_{rel,0} = \frac{\hat{p}^2}{2\mu}
+\end{equation}
+
+With eigenvalue $E_{\vb{k}}=\frac{\hbar^2 k^2}{2\mu}$, then we can associate an eigenstate $\psi_{\vb k}(\vb r)$ of $\hat{H}_{rel}$ with the same energy,
+
+\begin{equation}
+    \hat{H}_{rel}\psi_{\vb k}(\vb r) = E_{\vb k}\psi_{\vb k}(\vb r)
+\end{equation}
+
+this state is written asymptotically as the sum of the incident plane wave and an outgoing spherical (three-dimensional) or cylindrical (two-dimensional) wave:
+
+\begin{equation}\label{eq:asymptotic_state}
+    \begin{cases}
+        \text{3D},1\ll kr: & \psi_{\vb k}(\vb r) \sim C_0\biggl \{e^{i\vb k\cdot \vb r} + f(k)\frac{e^{ikr}}{r}\biggr \} \\
+        \text{2D},1\ll kr  : & \psi_{\vb k}(\vb r) \sim C_0\biggl \{e^{i\vb k\cdot \vb r} + f(k)\frac{e^{ikr}}{\sqrt{kr}}\biggl [ -\sqrt{\frac{\text{i}}{8\pi}}\biggr ]\biggr \}
+    \end{cases}
+\end{equation}
+
+Where $C_0$ is a normalization constant. We have taken into account the fact that diffusion takes place essentially in the channel with zero angular momentum (s wave) and therefore we limit ourselves to the case of an isotropic diffused wave. Furthermore, we note that the definition of the diffusion amplitude $f(k)$ is not exactly the same in three and two dimensioins, with the factor $\sqrt{k}$ which apperas explicitly in the two-dimensional case. The definitions adopted here ensures analytical properties that are simple to $f(k)$ [some reference]. Finally, let us point out that the reason for the factor in square brackets in the 2D definition is due to the form found for $f(k)$ in the case of a quasi-2D geometry (more on that later) which will take the form $f(k)\approx \tilde{g}$, where the constant $\tilde{g}$ is the parameter usually used to characterize the strength of interactions in this type of problem. 
+
+The diffusion amplitude $f(k)$ therefore determines the properties of the binary collision. To compute it, we have to take the angular average of the Schrödinger equation, noting that $R_k(r)=\frac{1}{4\pi}\int \psi_{\vb k}(r,\theta,\phi)\sin\theta d\theta d\phi$ in 3D and $R_k=\frac{1}{2\pi}\int \psi_{\vb k}(r,\phi)d\phi$ in 2D. Then, one arrives to the radial Schrödinger equation:
+
+\begin{equation}
+    \text{3D:}\qquad \dv[2]{R_k}{r}+\frac{2}{r}\dv{R_k}{r}+\qty[k^2-\frac{2\mu}{\hbar^2}U(r)]R_k = 0
+\end{equation}
+
+And 
+
+\begin{equation}
+    \text{2D:}\qquad \dv[2]{R_k}{r}+\frac{1}{r}\dv{R_k}{r}+\qty[k^2-\frac{2\mu}{\hbar^2}U(r)]R_k = 0
+\end{equation}
+
+Even though the difference between the 3D and the 2D equation appears to be very minor, with only a factor of 2 difference for the first derivative term, we will see that this difference strongly changes the behaviour of the radial function $R_k(r)$ and the diffusion amplitude $f(k)$. Note that the asymtotic behaviour of the radial function $R_k(r)$ is obtained by the angular mean of \cref{eq:asymptotic_state}:
+
+\begin{equation}
+    \begin{cases}
+        \text{3D},1\ll kr: & R_{k}(r) \sim C_0\biggl \{\frac{\sin(kr)}{kr} + f(k)\frac{e^{ikr}}{r}\biggr \} \\
+        \text{2D},1\ll kr  : & R_{k}(r) \sim C_0\biggl \{J_0(kr) + f(k)\frac{e^{ikr}}{\sqrt{kr}}\biggl [ -\sqrt{\frac{\text{i}}{8\pi}}\biggr ]\biggr \}
+    \end{cases}
+\end{equation}
+
+To simplify our analysis, we will assume that the potential $U(r)$ vanishes beyond the radius $b$. We will focus on the low energy regime $kb\ll 1$, so that there exists an intermediate region of space
+
+\begin{equation}
+    b<r\ll k^{-1}
+\end{equation}
+
+such that the potential $U(\vb r)$ has no influence and where we can do a developement at small values of $kr$ for diffusion states $\psi_k(r)$. In particular, the incident plane wave $e^{i\vb k\cdot \vb r} \approx 1$ in this intermediate region.
+
+\subsection{The diffusion amplitude in 3D}
+
+In this section, we aim to obtain a solution of the Schrödinger equation with the corresponding asymptotic behaviour. To do this, we will proceed in three steps, which we will then use to compute it in the two-dimensional case:
+
+\begin{enumerate}
+    \item \textbf{General solutions in the area $U=0$}. We will place ourselves in the zone $r>b$, where $U$ is negligible. The two functions $\frac{e^{\pm ikr}}{r}$ are exact solutions of the radial equation (as well for $kr\gg 1$ and for $b<r<k^{-1}$), and the general solution is a linear combination of these two functions. In particular, if one looks at the intermediate region $b<r<k^{-1}$, one finds:
+    \begin{equation}
+        \frac{e^{\pm ikr}}{r}\approx \frac{1\pm ikr}{r}=\frac{1}{r}\pm ik
+    \end{equation}
+
+    which, by linear combinations, give a convenient basis of solutions in this region\footnote{That can be infered taking the limit $k\to 0$ $U\to 0$ in the radial function, so that the final equation is $rR''+2R'=0$, which integrates into $R'(r)=\frac{C_2}{r^2}$ where $C_2$ is a constant, and therefore $R(r)=C_1-\frac{C_2}{r}$, where $C_1$ is another constant}:
+    \begin{equation}
+        R^{(I)}(r)=1\qquad R^{(II)}(r)=\frac{1}{r},
+    \end{equation}
+
+    or
+
+    \begin{equation}
+        R(r)=C_1-C_2\frac{1}{r},
+    \end{equation}
+
+    Where $C_1$ and $C_2$ are constants. The asymptotic shape written in terms of the two functions $\frac{e^{\pm ikr}}{r}$ can be transposed to this intermediate region, since these functions are exact solutions as long as the potential $U$ is negligible and we end up with the form of the radial function:
+    \begin{equation}
+        R_k(r) = C_1\qty[1+\frac{f(k)}{r}]
+    \end{equation}
+    \begin{itemize}
+        \item A bit more detail in the last calculation:
+        
+        In this intermediate region, $e^{\pm ikr}\approx 1\pm ikr$. Taking:
+        \[R_k(r)\sim C_0\qty[\frac{\sin(kr)}{kr}+f(k)\frac{e^{ikr}}{r}]\] 
+        and using $sin(x)=\frac{e^{ix}-e^{-ix}}{2i}$, we get:
+        \[R_k(r)\sim C_0\qty[\frac{e^{ikr}-e^{-ikr}}{2ikr}+f(k)\frac{e^{ikr}}{r}]=C_0\qty[\frac{1+ikr-(1-ikr)}{2ikr}+f(k)\frac{1+ikr}{r}]\]
+        Then this can be expressed as:
+        \[R_k(r)\sim C_0\qty[1+f(k)\qty(\frac{1}{r}\underbrace{+ik}_{??})]\]
+        And as we are in this region, $k\to 0$, we can neglect the term $ik$ and we get the expression for $R_{k}(r)$.
+    \end{itemize}
+    \item \textbf{Zero energy solution}. Let's take $k=0$ in the radial Schrödinger equation and consider the region $r<b$ where $U(r)$ can't be neglected. As it is a second order differential equation, the space solution is of dimension 2. However, we generally find that a single linear combination of solutions is accepatable if we want to respect the regularity of $R_0(r)$ at $r=0$. When we follow this solution to the point $r=b$, where $U$ becomes negligible and then the previous asymptotic form becomes relevant, this linear combination imposes the ratio $\frac{C_2}{C_1}$. Defining the three-dimensional diffusion lenght by this ratio $a=\frac{C_2}{C_1}$, the solution for $E=0$ has the form:
+    \begin{equation}
+        R_0(r)=C_1\qty[1-\frac{a}{r}]
+    \end{equation}
+    The diffusioin length is by construction the point in which this asymptotic form vanishes.
+    \item \textbf{Connect solutions for low energy} Let's consider now a solution $R_k(r)$ of low energy $kb\ll 1$ and let us place ourselves in the intermediate zone $b<r<k^{-1}$. The comparison of the asymptotic form of $R_k(r)$ with the solution at zero energy, implies a direct link between the diffusion amplitude $f(k)$ and the diffusion length $a$:
+    \begin{equation}
+        a = -\lim_{k\to 0}f(k)
+    \end{equation}
+
+    The total cross section of diffusion by the potential $U(r)$ is the calculated by the balance of probability currents at the input and output and we find $\sigma = 4\pi a^2$. For bosonic particles, the effects of quantum statistics adds a factor of 2 in the result.
+\end{enumerate}
+
+\subsection{The diffusion amplitude in 2D}
+
+Proceeding as the 3D case:
+
+\begin{enumerate}
+    \item \textbf{General solutions in the area $U=0$}. The 2D case is inherently more complicated than the 3D case, because cylindrical waves $\frac{e^{\pm ikr}}{\sqrt{r}}$ are not exact solutions of the corresponding radial equation for $U=0$. If they were, the lower energy limit would provide the basis of functions $\frac{1}{\sqrt{r}}\pm ik \sqrt{r}$, or the linear combination of $\frac{1}{\sqrt{r}}$ and $\sqrt{r}$. But in the limit $k\to 0$ and $U\to 0$, the radial equation reads $rR''+R'=0$, which integrates into $R'(r)=\frac{C_1}{r}$, where $C_1$ is a constant, and therefore 
+    \begin{equation}\label{eq:radial_2D_U0}
+    R(r)=C_1\ln r+C_2,
+    \end{equation} 
+    
+    where $C_2$ is another constant. To find this result in a more general framework, we note that the radial equation in 2D for $U=0$ is, in fact, the definition equation for Bessel functions of order 0. Two independent solutions of this equation are the Bessel function of the first kind, $J_0(kr)$, and the Bessel function of the second kind, $Y_0(kr)$. The behavior of the functions $J_0(kr)$ and $Y_0(kr)$ are known for big and small values of $kr$:
+
+    \begin{align*}
+        kr\gg 1: & \quad J_0(kr)\sim \sqrt{\frac{2}{\pi kr}}\cos(kr-\frac{\pi}{4}) \\
+        & \quad Y_0(kr)\sim \sqrt{\frac{2}{\pi kr}}\sin(kr-\frac{\pi}{4})
+    \end{align*}
+
+    and
+
+    \begin{align*}
+        kr\ll 1: & \quad J_0(kr)\sim 1 \\
+        & \quad Y_0(kr)\sim \frac{2}{\pi} \ln(\eta kr)
+    \end{align*}
+
+    Where $\eta\equiv \frac{e^\gamma}{2}$, with $\gamma$ the Euler-Mascheroni constant. In particular, every linear combination of $J_0(kr)$ and $Y_0(kr)$ at $kr\ll 1$ is a solution of the described form.
+
+    \item \textbf{Zero energy solution}. For $k=0$, and with the presence of a potential $U(r)$, the space of general solutions $R_0(r)$ is of dimension 2. However, the regularity of $R_0(r)$ at $r=0$ imposes a restriction on the linear combination of solutions. When we extend it beyond the radius $r=b$ this linear combination is connected to a particular linear combination of the type shown in \cref{eq:radial_2D_U0}, which can be written as:
+    \begin{equation}
+        r>b:\quad R_0(r)=C_1\ln(\frac{r}{a_2})
+    \end{equation}
+
+    Where $a_2\equiv e^{-\frac{C_2}{C_1}}$ \color{red}Isn't it our definition $a_{eff}=a_2\eta$? \color{black} is the diffusion length in two dimensions.
+    \item \textbf{Connect solutions for low energy}. Moving to the case in which $k$ is not zero but remains very small in front of $b^{-1}$. To form an outgoing cylindrical wave, we see from the behaviours of $J_0(kr)$ and $Y_0(kr)$ that we must take a function proportional to the linear combination $J_0(kr)+\text{i}Y_0(kr)\equiv H_0^{(1)}(kr)$. More precisely, we will choose:
+    
+    \begin{equation}
+        \text{2D, } 1\ll kr: \quad \frac{1}{4\text{i}}\qty[J_0(kr)+\text{i}Y_0(kr)]\sim \frac{e^{ikr}}{\sqrt{kr}}\qty[-\sqrt{\frac{\text{i}}{8\pi}}]
+    \end{equation}
+
+    \begin{itemize}
+        \item A bit more detail in the last calculation:
+        Using the expressions for $J_0(kr)$ and $Y_0(kr)$, in the limit $kr\gg 1$ we have:
+        \begin{align*}
+            \frac{1}{4\text{i}}\qty[J_0(kr)+\text{i}Y_0(kr)]&= \frac{1}{4\text{i}}\qty[\sqrt{\frac{2}{\pi kr}}\cos(kr-\frac{\pi}{4})+\text{i}\sqrt{\frac{2}{\pi kr}}\sin(kr-\frac{\pi}{4})] \\
+            & = \frac{1}{4\text{i}}\sqrt{\frac{2}{\pi kr}}\qty[\cos(kr-\frac{\pi}{4})+\text{i}\sin(kr-\frac{\pi}{4})] \\
+            & = \frac{1}{4\text{i}}\sqrt{\frac{2}{\pi kr}}e^{i(kr-\frac{\pi}{4})} 
+             = \sqrt{\frac{2}{16\pi \text{i}}}\frac{e^{ikr}}{\sqrt{kr}}\underbrace{e^{-i\frac{\pi}{4}}}_{??}\\
+            & = -\sqrt{\frac{\text{i}}{8\pi}}\frac{e^{ikr}}{\sqrt{kr}}e^{-i\frac{\pi}{4}}
+        \end{align*}
+    \end{itemize}
+    Where we can recognize the factor we introduced with the diffusion amplitude. For $r>b$, the desired radial function is therefore of the type
+    \begin{equation}
+        R_k(r)=C_0\qty[J_0(kr)+\frac{f(k)}{4\text{i}}H_0^{(1)}(kr)]
+    \end{equation}
+
+    In the intermediate region $b<r<k^{-1}$, this linear combination becomes:
+
+    \begin{equation}
+        R_k(r)=C_0\qty[+\frac{f(k)}{4\text{i}}\qty(1+\text{i}\frac{2}{\pi}\ln(\eta kr))]
+    \end{equation}
+
+    Which, in the limit of $k\to 0$, the diffusion amplitude is given by:
+
+    \begin{equation}
+        f(k)=-4\text{i}\frac{1}{1+\text{i}\frac{2}{\pi}\ln(\eta k a_2)}=\frac{1}{-\frac{1}{2\pi}\ln(\eta k a_2)+\frac{\text{i}}{4}}
+    \end{equation}
+
+    So that we recover the form found earlier $C_1\ln(\frac{r}{a_2})$ with, in particular, $R_k(r)=0$ at $r=a_2$.
+
+    Note that the diffusion amplitude $f(k)$ tends towards 0 at small $k$, unlike the 3D case where it tended towards a finite limit equal to $-a$. Furthermore, the total cross section of diffusion by the potential $U(r)$ is also calculated here by a balance of the probability currents at the input and output. We find $\sigma(k)=\frac{|f(k)|^2}{4k}$, which has the dimension of length and diverges gradually with the decrease of $k$.
+\end{enumerate}
+
