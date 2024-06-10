@@ -1,6 +1,6 @@
 import numpy as np
 from .m_matrix import derivative_M_inf_E
-from tqdm import tqdm
+from tqdm.autonotebook import tqdm as tqdm
 from time import time
 
 def newton_step(eigenvalue,eigenvector, k, distances):
@@ -8,7 +8,7 @@ def newton_step(eigenvalue,eigenvector, k, distances):
     derived_matrix = derivative_M_inf_E(k, distances)
     
     # apply hellmann-feynman theorem
-    derivative_eigval = eigenvector.conj().T @ derived_matrix @ eigenvector # IS THIS CORRECT?
+    derivative_eigval = eigenvector.T @ derived_matrix @ eigenvector # IS THIS CORRECT?
     
     # compute the actual step
     
@@ -32,7 +32,7 @@ def resonance(energy, index_eigenval, eigvals, eigvecs, distances, newton=True):
     eigval = eigvals[index_eigenval]
     eigvec = eigvecs[:,index_eigenval]
     
-    a_eff = np.exp(-np.real(eigval))
+    a_eff = float(np.exp(-np.real(eigval)))
     
     if newton:
         step = newton_step(eigval, eigvec, k, distances)
@@ -43,11 +43,11 @@ def resonances(energy, M_inf,distances):
     """Given an energy and a M_inf matrix, compute all resonances of the system"""    
     z_res = np.zeros(M_inf.shape[0], dtype=np.complex128)
     a_eff = np.zeros(M_inf.shape[0], dtype=np.complex128)
-    print("Computing resonances")
+    # print("Computing resonances")
     start = time()
     eigvals, eigvecs = np.linalg.eig(M_inf)
     end = time()
-    print(f"Eigenvalues computed. Time elapsed: {end-start:.2f}")
-    for i in tqdm(range(M_inf.shape[0])):
+    # print(f"Eigenvalues computed. Time elapsed: {end-start:.2f}")
+    for i in tqdm(range(M_inf.shape[0]), desc=f"Diagonalization time: {end-start:.2f}\n Computing resonances", leave=True):
         a_eff[i], z_res[i] = resonance(energy, i, eigvals, eigvecs, distances)
     return a_eff, z_res

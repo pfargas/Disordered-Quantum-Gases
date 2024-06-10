@@ -1,14 +1,14 @@
 {
-    "length": 60,
+    "length": 100,
     "p": 0.1,
     "energy":{
-        "min": 0.1,
-        "max": 0.6,
+        "min": 0.06,
+        "max": 0.3,
         "number":50
     },
     "ln_a_eff":{
-        "min": -2,
-        "max": 2,
-        "number":350
+        "min": -1.5,
+        "max": 0,
+        "number":100
     }
 }
