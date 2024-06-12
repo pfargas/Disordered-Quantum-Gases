@@ -8,39 +8,82 @@ The main object is the Green's function (or propagator) of the system. This math
 
 \subsection{Criterium for localization}
 
+\textcolor{red}{Why does the green's function has to satisfy the same boundary conditions as the wave function?}
+
 The usual criterium for determining that some state is localized is the exponential decay of the wave function. This can be seen in the Green's function, as the Green's function is the propagator of the system, and it can be used to determine the wave function of the system.
 
 But, one can see that this criterium could be not enough. Even though it is true that Anderson localization implies an exponential decay of the wave function, there is another situation that leads to this decay: if we inject particles in a spectral gap of the system, the wave function will decay exponentially. This is not Anderson localization, but a consequence of the spectral gap [reference exponential decay of correlation function in a spectral gap].
 
 \subsection{Scaling theory: 2D as a critical dimension}
 
-Briefly discuss the scaling theory for the conductivity. 3D mobility edge and 1D always localized. [Anderson and QFT condensed matter book]
-
-\subsection{Method for effective calculation of M matrix}
-
-Paralellise M matrix as follows:
-
-\begin{itemize}
-    \item M matrix is symmetric, compute only upper triangle without diagonal.
-    \item The upper triangle is divided in 4 blocks
-    \item Each block is a process
-    \item then we add the 4 blocks, add transpose and add diagonal (separate process)
-    \item Diagonal is not difficult (just a constant)
-\end{itemize}
-
-FINALLY, NUMBA CALCULATIONS. WAY EASIER.
-
-\subsection{Numerical methods: Diagonalisation of M matrix, SVD and simulations}
-
-DECOMPOSE THE M MATRIX (SVD or DIAGONALIZATION??), PYTHON AND METHODS USED. EFFICIENCY OF THE CODE.
+To study the presence of localization in 2D, we can use an argument derived from the renormalization group. The main point is to study the influence of disorder in the electric resistance $V=IR$, where $V$ is the potential applied, $R$ the resistance and $I$ the intensity, and connect the result with the microscopic description of the system $j=\sigma E$, where $j$ is the microscopic current, $E$ the electric field and $\sigma$ is the conductivity. We define the conductance $g$ as the inverse of the resistance. 
 
 \begin{equation}
-    M  = U \Sigma V^T
+    g=\frac{1}{R}
 \end{equation}
 
-Where $U$ and $V$ are orthogonal matrices and $\Sigma$ is a diagonal matrix. The diagonal elements of $\Sigma$ are the singular values of $M$. The singular values are the square roots of the eigenvalues of $M^T M$ only if $M$ is a square matrix with positive eigenvalues (?).
+The conductivity $\sigma$ could be obtained from first principles and the microscopic description of the system. Following the argument described by the "gang of four" [Gang of four paper], we will use the argument that the conductance of a block of size $2L$, $g(2L)$, only depends on the conductance of the block of size $L$, $g(L)$, meaning: 
 
-Should I define $E=k^2$ or $E=\frac{k^2}{2}$?!!
+\begin{equation}
+    g(2L)=f(g(L))
+\end{equation}
+
+Supposing this statement is true, we can derive some consequences. We can express the former relation in such a way that no length scale appears:
+
+\begin{equation}
+    \frac{L}{g}\frac{dg(L)}{dL}=\dv{\log(g)}{\log(L)}=\beta (g)
+\end{equation}
+
+Then, for a good concuctor, $g\ll 1$ and we know that ohm's law $R=\rho \frac{L}{A}$ holds. This relation, in fact, fulfills the scaling relation:
+
+\begin{equation}
+    R=\rho \frac{L}{L^{d-1}}\to g = \sigma_0 L^{d-2}
+\end{equation}
+
+Where $d$ is the dimension of the system. With this result, in the limit $g\to \infty$ we obtain:
+
+\begin{equation}
+    \dv{\log{(g)}}{\log{(L)}}=d-2\to \lim_{g\to \infty} \beta(g)=d-2
+\end{equation}
+
+And, following Mott idea, at strong disorder, all wavefunctions are localized, meaning the conductance is expected to behave as:
+
+\begin{equation}
+    g(L)\propto \exp{(-L/\xi)}\Rightarrow \dv{\log(g)}{\log(L)}=-\frac{L}{\xi}=\log(g)\Rightarrow \lim_{g\to 0}\beta(g)=\log(g)
+\end{equation}
+
+Briefly discuss the scaling theory for the conductivity. 3D mobility edge and 1D always localized. [Anderson and QFT condensed matter book]
+
+\textcolor{red}{should this be in state of the art?}
+\textcolor{red}{Should I comment why does disorder leads to localization? Constructive and destructive interference paths in Feynman path integral.}
+
+\subsection{Formulation of the problem}
+
+Using the Wigner-Bethe-Peierls condition (or the Huang-Yang delta potential), and the fact that in 2D, $\Delta_{\vb{r}}\ln(r)=2\pi \delta(\vb{r})$ the problem is formulated as the usual Green's function for the Schrödinger equation, with secondary point-like sources:
+
+\begin{equation}
+    \qty(z+\frac{\hbar^2}{2m}\Delta_{\vb{r}})G(\vb{r},\vb{r}_0)=\delta(\vb{r}-\vb{r}_0)+\sum_{i=1}^N D_i\delta({\vb{r}-\vb{r}_i})
+\end{equation}
+
+Where $z\in\mathbb C$ is an extension of the energy to the complex plane. The formal solution of this problem is:
+
+\begin{equation}
+    G(\vb{r},\vb{r}_0)=g_0(\vb{r}-\vb{r}_0)+\sum_{i=1}^N D_i g_0(\vb{r}-\vb{r}_i)
+\end{equation}
+
+Where $g_0(\vb{r})$ is the 2D free Green's function:
+
+\begin{equation}
+    \label{eq:2d_free_gf}
+    g_0(\vb{r})=-\frac{im}{2\hbar^2}H_0^{(1)}(kr)
+\end{equation}
+
+Then, the secondary source amplitudes $D_i$ are determined by imposing the contact conditions \textcolor{red}{What is M?}
+
+\subsection{Numerical methods: Diagonalisation of M matrix and simulations}
+
+The final objective is to determine the density of resonances \textcolor{red}{!} which are localized, given a scattering length $a_{eff}$. To do this, the first goal is to construct a histogram in which each bin consist on an energy interval $[E,E+\Delta E]$, and a scattering length interval $[a_{eff},a_{eff}+\Delta a_{eff}]$, in which the number of localized states is counted \textcolor{red}{(?)}. To find the resonances, we take into account that a ressonance is a pole of the Green's function. The fact that the Green's function is formally written proportional to the inverse of the matrix $M$, suggests that the eigenvalues of the matrix $M$ will be related to the resonances of the system.
+
 
 NEWTON METHOD TO FIND RESONANCES:
 

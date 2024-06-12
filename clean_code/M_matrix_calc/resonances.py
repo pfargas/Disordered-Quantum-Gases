@@ -8,7 +8,7 @@ def newton_step(eigenvalue,eigenvector, k, distances):
     derived_matrix = derivative_M_inf_E(k, distances)
     
     # apply hellmann-feynman theorem
-    derivative_eigval = eigenvector.T @ derived_matrix @ eigenvector # IS THIS CORRECT?
+    derivative_eigval = eigenvector.T.conj() @ derived_matrix @ eigenvector
     
     # compute the actual step
     
@@ -27,27 +27,32 @@ def resonance(energy, index_eigenval, eigvals, eigvecs, distances, newton=True):
     a_eff: float, effective scattering length (such that the real part of M is 0 at the ressonance)
     z_res: float, energy of the resonance (complex!)
     """
-    
+
     k = np.sqrt(2*energy)
     eigval = eigvals[index_eigenval]
     eigvec = eigvecs[:,index_eigenval]
-    
+
     a_eff = float(np.exp(-np.real(eigval)))
-    
+
     if newton:
         step = newton_step(eigval, eigvec, k, distances)
-        return a_eff, energy + step
+        return a_eff, step
     else:
         return a_eff, energy + 1j*np.imag(eigval)
+
 def resonances(energy, M_inf,distances):
     """Given an energy and a M_inf matrix, compute all resonances of the system"""    
     z_res = np.zeros(M_inf.shape[0], dtype=np.complex128)
     a_eff = np.zeros(M_inf.shape[0], dtype=np.complex128)
-    # print("Computing resonances")
+
     start = time()
-    eigvals, eigvecs = np.linalg.eig(M_inf)
+    eigvals, eigvecs = np.linalg.eig(M_inf) 
     end = time()
-    # print(f"Eigenvalues computed. Time elapsed: {end-start:.2f}")
+    
+    # sanity check
+    i=np.random.randint(M_inf.shape[0])
+    assert np.linalg.norm(M_inf@eigvecs[:,i] - eigvals[i]*eigvecs[:,i]) < 1e-5, "Eigenvalues and eigenvectors are not consistent"
+    
     for i in tqdm(range(M_inf.shape[0]), desc=f"Diagonalization time: {end-start:.2f}\n Computing resonances", leave=True):
         a_eff[i], z_res[i] = resonance(energy, i, eigvals, eigvecs, distances)
     return a_eff, z_res

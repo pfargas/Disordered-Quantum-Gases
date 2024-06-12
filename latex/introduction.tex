@@ -16,7 +16,25 @@ Arguably, the most known model for lattice systems is the Hubbard model. In it, 
 
 However, in disordered systems, the backscattering effects of a single particle with the disorder, can lead to a constructive interference of the wavefunction in some region of space, reducing the conductivity of the material in case of solid state materials. This is called weak localization and it is considered the precursor of the Anderson localization or strong localization phenomena. RANDOM WALK?
 
+\subsection{Objectives}
 
+In this work we aim to study the localization of a non-interacting Fermi gas in a 2D lattice of point-like scatterers. The main objectives are:
+
+\begin{enumerate}
+    \item Understand Anderson localization and 2D scattering theory.
+    \item Implement the numerical model proposed by [Massignan 2006] and [Quantitative study of two...], and try to reproduce their results.
+    \item Extend the argument to a system of non-interacting fermions
+\end{enumerate}
+
+\subsection{Procedure}
+
+Even though the formalism could be somewhat intimidating, and the theory of scattering in 2D is not trivial, if we take the results obtained in 2D in [Quantitative study...] the problem is simplified to an easy mathematical problem. However, the fact that we were not working with tools like Mathematica or Matlab, but with Python, made the implementation to be more challenging. Those kinds of scientific numerical software have a lot of built-in functions that can be directly used, such as code parallelisation or matrix operations. In the case of python, we had to investigate which libraries, techniques and data representation was the best for the problem. 
+
+Finally, the combination of vectorization of the operations with numpy, and parallelisation of the code using the multiprocessing library and numba, made the code fast enough to be useful.
+
+\subsection{Setbacks}
+
+The main setback of this work was the lack of experience in the formalism used, and the poor implementation of the own code. The first iteration of the code was too slow to be useful, due to the lack of knowledgement in optimization techniques. There has been a lot of time spent in understanding the formalism and the optimization of the code, with multiple tries in the code. 
 
 {An Introduction that clearly states the rationale of the thesis that includes:}
 
