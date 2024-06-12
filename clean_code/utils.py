@@ -79,7 +79,7 @@ class Input:
         
         return string
 
-def compute_resonances_per_energy(energy, length = 70, p=0.1):
+def compute_resonances_per_energy(energy,input:Input ,length = 70, p=0.1):
     k = np.sqrt(2*energy)
     # dispersor_set = generate_lattice_dispersors(length=length, p=p)
     dispersor_set = generate_circular_lattice_dispersors(radius=length, p=p)
@@ -87,16 +87,16 @@ def compute_resonances_per_energy(energy, length = 70, p=0.1):
     distances = np.zeros((dispersor_set.shape[0], dispersor_set.shape[0]))
     distances = distances_between_dispersors(distances_matrix=distances, dispersor_set=dispersor_set)
     M_matrix_inf = M_inf(k=k, distances=distances)
-    a_eff, z_res = resonances(energy, M_matrix_inf, distances)
+    a_eff, z_res = resonances(energy, M_matrix_inf, distances, input)
     return a_eff, z_res
 
 @timer
-def compute_resonances_total(input_sweep:Input , length, occupation_probability,results=[]):
-    settings = input_sweep.settings_energy_sweep
+def compute_resonances_total(input:Input , length, occupation_probability,results=[]):
+    settings = input.settings_energy_sweep
     energies = np.arange(settings["min"], settings["max"], settings["step"])
     print(f"Energy step: {settings['step']}, Actual energy step: {energies[1]-energies[0]}")
     for energy in tqdm(energies):
-        a_eff, z_res = compute_resonances_per_energy(energy, length=length, p=occupation_probability)
+        a_eff, z_res = compute_resonances_per_energy(energy,input ,length=length, p=occupation_probability)
         for z_res, a_eff in zip(z_res, a_eff):
             results.append(Result(z_res, a_eff, energy=energy))
     return results

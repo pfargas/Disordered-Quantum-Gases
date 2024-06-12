@@ -40,11 +40,12 @@ def resonance(energy, index_eigenval, eigvals, eigvecs, distances, newton=True):
     else:
         return a_eff, energy + 1j*np.imag(eigval)
 
-def resonances(energy, M_inf,distances):
+def resonances(energy, M_inf,distances, input):
     """Given an energy and a M_inf matrix, compute all resonances of the system"""    
     z_res = np.zeros(M_inf.shape[0], dtype=np.complex128)
     a_eff = np.zeros(M_inf.shape[0], dtype=np.complex128)
-
+    max_ln_a_eff = input.settings_a_eff_histogram["max"]
+    min_ln_a_eff = input.settings_a_eff_histogram["min"]
     start = time()
     eigvals, eigvecs = np.linalg.eig(M_inf) 
     end = time()
@@ -53,7 +54,15 @@ def resonances(energy, M_inf,distances):
     i=np.random.randint(M_inf.shape[0])
     assert np.linalg.norm(M_inf@eigvecs[:,i] - eigvals[i]*eigvecs[:,i]) < 1e-5, "Eigenvalues and eigenvectors are not consistent"
     print(f"Energy:{energy}, diagonalization time: {end-start:.2f} s")
-    # for i in tqdm(range(M_inf.shape[0]), desc=f"Diagonalization time: {end-start:.2f}\n Computing resonances", leave=True):
-    for i in range(M_inf.shape[0]):
+    for i in tqdm(range(M_inf.shape[0]), desc=f"Diagonalization time: {end-start:.2f}\n Computing resonances", leave=True):
+    # for i in range(M_inf.shape[0]):
+        ln_a_eff = -np.real(eigvals[i])
+        if max_ln_a_eff<ln_a_eff or min_ln_a_eff>ln_a_eff:
+            z_res[i] = np.nan
+            a_eff[i] = np.nan
+            continue
         a_eff[i], z_res[i] = resonance(energy, i, eigvals, eigvecs, distances)
+    # strip the nans
+    a_eff = a_eff[~np.isnan(a_eff)]
+    z_res = z_res[~np.isnan(z_res)]
     return a_eff, z_res
