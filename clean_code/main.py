@@ -3,10 +3,9 @@ from utils import *
 from tqdm import tqdm
 from functools import partialmethod
 
-tqdm.__init__ = partialmethod(tqdm.__init__, disable=False)
+tqdm.__init__ = partialmethod(tqdm.__init__, disable=True)
 
 def main(filename=None):
-    # length, min_energy, max_energy, n_energies, min_ln_a_eff, max_ln_a_eff, n_ln_a_eff, occupation_probability, n_energy_sweep = read_inputs()
     if filename is not None:
         input_reader = Input(filename)
     else:
@@ -19,8 +18,8 @@ def main(filename=None):
     return results
 if __name__ == '__main__':
     filename = "clean_code/inputs.json"
-    results = main(filename)
     input_reader = Input(filename)
+    results = compute_resonances_total(input_reader, input_reader.length, input_reader.occupation_probability)
     import csv
     with open('clean_code/results.csv', 'w') as file:
         writer = csv.writer(file)

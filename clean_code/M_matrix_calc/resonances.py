@@ -52,7 +52,8 @@ def resonances(energy, M_inf,distances):
     # sanity check
     i=np.random.randint(M_inf.shape[0])
     assert np.linalg.norm(M_inf@eigvecs[:,i] - eigvals[i]*eigvecs[:,i]) < 1e-5, "Eigenvalues and eigenvectors are not consistent"
-    
-    for i in tqdm(range(M_inf.shape[0]), desc=f"Diagonalization time: {end-start:.2f}\n Computing resonances", leave=True):
+    print(f"Diagonalization time: {end-start:.2f}")
+    # for i in tqdm(range(M_inf.shape[0]), desc=f"Diagonalization time: {end-start:.2f}\n Computing resonances", leave=True):
+    for i in range(M_inf.shape[0]):
         a_eff[i], z_res[i] = resonance(energy, i, eigvals, eigvecs, distances)
     return a_eff, z_res
