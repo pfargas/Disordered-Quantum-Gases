@@ -39,18 +39,6 @@ class Input:
         with open(filename) as f:
             inputs = json.load(f)
         return inputs
-        # length = inputs["length"]
-        # min_energy = inputs["energy_bin"]["min"]
-        # max_energy = inputs["energy_bin"]["max"]
-        # n_energies = inputs["energy_bin"]["number"]
-        # min_ln_a_eff = inputs["ln_a_eff"]["min"]
-        # max_ln_a_eff = inputs["ln_a_eff"]["max"]
-        # n_ln_a_eff = inputs["ln_a_eff"]["number"] # number of bins in vertical axis
-        # n_energies_sweep = inputs["energy_sweep"]["number"]
-        # occupation_probability = inputs["p"]
-        # print(f"Delta energy: {(max_energy-min_energy)/n_energies}")
-        # print(f"Delta ln(a_eff): {(max_ln_a_eff-min_ln_a_eff)/n_ln_a_eff}")
-        # return length, min_energy, max_energy, n_energies, min_ln_a_eff, max_ln_a_eff, n_ln_a_eff, occupation_probability, n_energies_sweep
 
     def __str__(self):
         

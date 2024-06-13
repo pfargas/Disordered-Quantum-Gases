@@ -42,13 +42,20 @@ class Histogram:
                     print(f"n_energy: {self.n_energies}, n_a_eff: {self.n_ln_a_eff}")
                     print(f"Energy: {result.energy}, a_eff: {result.a_eff}")
         self.histogram = self.histogram/number_of_resonances
-        plt.pcolor(number_of_resonances)
-        plt.show()
+        self.statistics = number_of_resonances
         self.histogram = np.nan_to_num(self.histogram)
     def plot(self):
         energy = np.linspace(self.min_energy, self.max_energy, self.n_energies)
         ln_a_eff = np.linspace(self.min_ln_a_eff, self.max_ln_a_eff, self.n_ln_a_eff)
         print(f"Shapes: energy: {energy.shape}, ln_a_eff: {ln_a_eff.shape}, histogram: {self.histogram.shape}")
         plt.pcolor(energy, ln_a_eff, self.histogram)
+        plt.xlabel("$E/E_0$")
+        plt.ylabel("$\ln(a_{eff}/d)$")
+        plt.colorbar()
+        plt.show()
+        plt.pcolor(energy, ln_a_eff, self.statistics)
+        plt.title("Number of resonances per bin")
+        plt.xlabel("$E/E_0$")
+        plt.ylabel("$\ln(a_{eff}/d)$")
         plt.colorbar()
         plt.show()
