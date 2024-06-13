@@ -56,11 +56,11 @@ def resonances(energy, M_inf,distances, input):
     derived_matrix = derivative_M_inf_E(k, distances)
     for i in tqdm(range(M_inf.shape[0]), desc=f"Diagonalization time: {end-start:.2f}\n Computing resonances", leave=True):
     # for i in range(M_inf.shape[0]):
-        ln_a_eff = -np.real(eigvals[i])
-        if max_ln_a_eff<ln_a_eff or min_ln_a_eff>ln_a_eff:
-            z_res[i] = np.nan
-            a_eff[i] = np.nan
-            continue
+#        ln_a_eff = -np.real(eigvals[i])
+ #       if max_ln_a_eff<ln_a_eff or min_ln_a_eff>ln_a_eff:
+  #          z_res[i] = np.nan
+   #         a_eff[i] = np.nan
+    #        continue
         a_eff[i], z_res[i] = resonance(energy, i, eigvals, eigvecs, derived_matrix)
     # strip the nans
     a_eff = a_eff[~np.isnan(a_eff)]
