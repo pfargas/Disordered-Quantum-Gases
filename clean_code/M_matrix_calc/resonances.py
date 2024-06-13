@@ -3,9 +3,7 @@ from .m_matrix import derivative_M_inf_E
 from tqdm.autonotebook import tqdm as tqdm
 from time import time
 
-def newton_step(eigenvalue,eigenvector, k, distances):
-    
-    derived_matrix = derivative_M_inf_E(k, distances)
+def newton_step(eigenvalue,eigenvector, derived_matrix):
     
     # apply hellmann-feynman theorem
     derivative_eigval = eigenvector.T.conj() @ derived_matrix @ eigenvector
@@ -16,7 +14,7 @@ def newton_step(eigenvalue,eigenvector, k, distances):
     
     return step
 
-def resonance(energy, index_eigenval, eigvals, eigvecs, distances, newton=True):
+def resonance(energy, index_eigenval, eigvals, eigvecs, derived_matrix,newton=True):
     """Compute a single pole of the green's function, meaning given an energy and a dispersor lattice, select one eigenvalue and compute the effective scattering length and the energy of the resonance, such that the resonance is a pole of the green's function, i.e. z_{res}=0.
     
     Inputs:
@@ -35,7 +33,7 @@ def resonance(energy, index_eigenval, eigvals, eigvecs, distances, newton=True):
     a_eff = float(np.exp(-np.real(eigval)))
 
     if newton:
-        step = newton_step(eigval, eigvec, k, distances)
+        step = newton_step(eigval, eigvec, derived_matrix)
         return a_eff, step
     else:
         return a_eff, energy + 1j*np.imag(eigval)
@@ -54,6 +52,8 @@ def resonances(energy, M_inf,distances, input):
     i=np.random.randint(M_inf.shape[0])
     assert np.linalg.norm(M_inf@eigvecs[:,i] - eigvals[i]*eigvecs[:,i]) < 1e-5, "Eigenvalues and eigenvectors are not consistent"
     print(f"Energy:{energy}, diagonalization time: {end-start:.2f} s")
+    k = np.sqrt(2*energy)
+    derived_matrix = derivative_M_inf_E(k, distances)
     for i in tqdm(range(M_inf.shape[0]), desc=f"Diagonalization time: {end-start:.2f}\n Computing resonances", leave=True):
     # for i in range(M_inf.shape[0]):
         ln_a_eff = -np.real(eigvals[i])
@@ -61,7 +61,7 @@ def resonances(energy, M_inf,distances, input):
             z_res[i] = np.nan
             a_eff[i] = np.nan
             continue
-        a_eff[i], z_res[i] = resonance(energy, i, eigvals, eigvecs, distances)
+        a_eff[i], z_res[i] = resonance(energy, i, eigvals, eigvecs, derived_matrix)
     # strip the nans
     a_eff = a_eff[~np.isnan(a_eff)]
     z_res = z_res[~np.isnan(z_res)]

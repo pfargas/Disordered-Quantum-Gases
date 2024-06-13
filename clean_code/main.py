@@ -3,7 +3,7 @@ from utils import *
 from tqdm import tqdm
 from functools import partialmethod
 
-tqdm.__init__ = partialmethod(tqdm.__init__, disable=False)
+tqdm.__init__ = partialmethod(tqdm.__init__, disable=True)
 
 def main(filename=None):
     if filename is not None:
