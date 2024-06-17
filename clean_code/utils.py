@@ -84,8 +84,8 @@ def compute_resonances_per_energy(energy,input:Input ,length = 70, p=0.1):
 @timer
 def compute_resonances_total(input:Input , length, occupation_probability,results=[]):
     settings = input.settings_energy_sweep
-    with open("./out/info_last_exec.txt", "w") as f:
-        f.write(str(input))
+    # with open("./out/info_last_exec.txt", "w") as f:
+    #     f.write(str(input))
     energies = np.arange(settings["min"], settings["max"], settings["step"])
     for energy in tqdm(energies):
         a_eff, widths, s_p, m_inf, eigvals, eigvecs = compute_resonances_per_energy(energy,input ,length=length, p=occupation_probability)

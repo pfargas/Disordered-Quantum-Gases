@@ -7,14 +7,18 @@ import os
 tqdm.__init__ = partialmethod(tqdm.__init__, disable=True)
 
 def main(filename=None):
-    if not os.path.exists("./out"):
-        os.mkdir("./out")
-    if filename is not None:
-        input_reader = Input(filename)
-    else:
-        input_reader = Input()
+    # if not os.path.exists("./out"):
+    #     os.mkdir("./out")
+    # if filename is not None:
+    #     input_reader = Input(filename)
+    # else:
+    #     input_reader = Input()
+    # print(input_reader)
+    print("Running main")
+
+    input_reader = Input()
     print(input_reader)
-    
+
     results = compute_resonances_total(input_reader, input_reader.length, input_reader.occupation_probability)
     histogram = Histogram(results, input_reader)
     histogram.plot()
