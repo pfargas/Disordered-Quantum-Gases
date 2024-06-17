@@ -2,6 +2,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 from tqdm.autonotebook import tqdm as tqdm
 from utils import Input
+from matplotlib.colors import LinearSegmentedColormap
 
 class Histogram:
     def __init__(self, results, settings:Input, compute_width=True):
@@ -24,38 +25,40 @@ class Histogram:
                 energy_index = result.energy_index(self.min_energy, self.max_energy, self.n_energies)
                 a_eff_index = result.a_eff_index(self.min_ln_a_eff, self.max_ln_a_eff, self.n_ln_a_eff)
                 if a_eff_index!=-1 and energy_index!=-1:
-                    print(f"Energy index: {energy_index}, a_eff index: {a_eff_index}")
-                    print(f"Energy: {result.energy}, a_eff: {result.a_eff}")
                     self.histogram[a_eff_index, energy_index]+=1
     def compute_width_histogram(self):
         number_of_resonances = np.zeros((self.n_ln_a_eff, self.n_energies), dtype=int)
         for result in tqdm(self.results):
             energy_index = result.energy_index(self.min_energy, self.max_energy, self.n_energies)
             a_eff_index = result.a_eff_index(self.min_ln_a_eff, self.max_ln_a_eff, self.n_ln_a_eff)
-            if a_eff_index!=-1 and energy_index!=-1:
+            if a_eff_index!=-1 and energy_index!=-1 and result.participation_surface<9.5:
                 try:
-                    self.histogram[a_eff_index, energy_index]+=np.log10(result.width)
+                    self.histogram[a_eff_index, energy_index]+=(result.width)
                     number_of_resonances[a_eff_index, energy_index]+=1
                 except IndexError:
-                    print(f"Energy index: {energy_index}, a_eff index: {a_eff_index}")
-                    print(f"shapes: Histogram: {self.histogram.shape}")
-                    print(f"n_energy: {self.n_energies}, n_a_eff: {self.n_ln_a_eff}")
-                    print(f"Energy: {result.energy}, a_eff: {result.a_eff}")
-        self.histogram = self.histogram/number_of_resonances
+                    pass
+                    # print(f"Energy index: {energy_index}, a_eff index: {a_eff_index}")
+                    # print(f"shapes: Histogram: {self.histogram.shape}")
+                    # print(f"n_energy: {self.n_energies}, n_a_eff: {self.n_ln_a_eff}")
+                    # print(f"Energy: {result.energy}, a_eff: {result.a_eff}")
+        self.histogram = np.where(number_of_resonances!=0, (self.histogram/number_of_resonances), 0)
+        self.histogram = np.where(self.histogram!=0.0, np.log(self.histogram), 0)
         self.statistics = number_of_resonances
         self.histogram = np.nan_to_num(self.histogram)
     def plot(self):
         energy = np.linspace(self.min_energy, self.max_energy, self.n_energies)
         ln_a_eff = np.linspace(self.min_ln_a_eff, self.max_ln_a_eff, self.n_ln_a_eff)
-        print(f"Shapes: energy: {energy.shape}, ln_a_eff: {ln_a_eff.shape}, histogram: {self.histogram.shape}")
-        plt.pcolor(energy, ln_a_eff, self.histogram)
+        if np.any(np.isnan(self.histogram)):
+            print("There are nan values in the histogram")
+        plt.pcolor(energy, ln_a_eff, self.histogram, cmap="seismic")
         plt.xlabel("$E/E_0$")
         plt.ylabel("$\ln(a_{eff}/d)$")
         plt.colorbar()
         plt.show()
-        plt.pcolor(energy, ln_a_eff, self.statistics)
-        plt.title("Number of resonances per bin")
-        plt.xlabel("$E/E_0$")
-        plt.ylabel("$\ln(a_{eff}/d)$")
-        plt.colorbar()
-        plt.show()
+        if hasattr(self, "statistics"):
+            plt.pcolor(energy, ln_a_eff, self.statistics)
+            plt.title("Number of states per bin")
+            plt.xlabel("$E/E_0$")
+            plt.ylabel("$\ln(a_{eff}/d)$")
+            plt.colorbar()
+            plt.show()

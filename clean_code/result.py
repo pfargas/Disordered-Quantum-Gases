@@ -1,12 +1,16 @@
 import numpy as np
 
+
 class Result:
-    def __init__(self, resonance, a_eff, energy):
-        self.resonance = resonance
+    
+    def __init__(self, imag_resonance, a_eff, energy, s_p, m_inf, spectrum=None, eigstates=None):
         self.a_eff = a_eff
-        # self.energy = np.real(resonance)
         self.energy = energy
-        self.width = np.imag(resonance)*2
+        self.width = imag_resonance*2
+        self.participation_surface = s_p
+        self.m_inf = m_inf
+        self.spectrum = spectrum
+        self.eigstates = eigstates
     
     def energy_index(self, min_energy, max_energy, n_energies):
         if self.energy>max_energy or self.energy<min_energy:

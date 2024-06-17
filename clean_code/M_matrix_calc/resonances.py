@@ -10,11 +10,11 @@ def newton_step(eigenvalue,eigenvector, derived_matrix):
     
     # compute the actual step
     
-    step = -1j*(np.imag(eigenvalue)/derivative_eigval)
+    step = -(np.imag(eigenvalue)/derivative_eigval)
     
     return step
 
-def resonance(energy, index_eigenval, eigvals, eigvecs, derived_matrix,newton=True):
+def resonance(energy, index_eigenval, eigvals, eigvecs, derived_matrix):
     """Compute a single pole of the green's function, meaning given an energy and a dispersor lattice, select one eigenvalue and compute the effective scattering length and the energy of the resonance, such that the resonance is a pole of the green's function, i.e. z_{res}=0.
     
     Inputs:
@@ -26,28 +26,31 @@ def resonance(energy, index_eigenval, eigvals, eigvecs, derived_matrix,newton=Tr
     z_res: float, energy of the resonance (complex!)
     """
 
-    k = np.sqrt(2*energy)
     eigval = eigvals[index_eigenval]
     eigvec = eigvecs[:,index_eigenval]
 
     a_eff = float(np.exp(-np.real(eigval)))
+    
+    s_p_rho = 0
+    
+    for d_i in eigvec:
+        s_p_rho += (d_i)**4
+    s_p_rho = 1/s_p_rho
 
-    if newton:
-        step = newton_step(eigval, eigvec, derived_matrix)
-        return a_eff, step
-    else:
-        return a_eff, energy + 1j*np.imag(eigval)
+    step = newton_step(eigval, eigvec, derived_matrix)
+    return a_eff, step, s_p_rho
+
 
 def resonances(energy, M_inf,distances, input):
     """Given an energy and a M_inf matrix, compute all resonances of the system"""    
-    z_res = np.zeros(M_inf.shape[0], dtype=np.complex128)
-    a_eff = np.zeros(M_inf.shape[0], dtype=np.complex128)
-    max_ln_a_eff = input.settings_a_eff_histogram["max"]
-    min_ln_a_eff = input.settings_a_eff_histogram["min"]
+    width = np.zeros(M_inf.shape[0], dtype=np.float16)
+    a_eff = np.zeros(M_inf.shape[0], dtype=np.float16)
+    s_p_rho = np.zeros(M_inf.shape[0], dtype=np.float16)
+
     start = time()
     eigvals, eigvecs = np.linalg.eig(M_inf) 
     end = time()
-    
+
     # sanity check
     i=np.random.randint(M_inf.shape[0])
     assert np.linalg.norm(M_inf@eigvecs[:,i] - eigvals[i]*eigvecs[:,i]) < 1e-5, "Eigenvalues and eigenvectors are not consistent"
@@ -55,14 +58,5 @@ def resonances(energy, M_inf,distances, input):
     k = np.sqrt(2*energy)
     derived_matrix = derivative_M_inf_E(k, distances)
     for i in tqdm(range(M_inf.shape[0]), desc=f"Diagonalization time: {end-start:.2f}\n Computing resonances", leave=True):
-    # for i in range(M_inf.shape[0]):
-#        ln_a_eff = -np.real(eigvals[i])
- #       if max_ln_a_eff<ln_a_eff or min_ln_a_eff>ln_a_eff:
-  #          z_res[i] = np.nan
-   #         a_eff[i] = np.nan
-    #        continue
-        a_eff[i], z_res[i] = resonance(energy, i, eigvals, eigvecs, derived_matrix)
-    # strip the nans
-    a_eff = a_eff[~np.isnan(a_eff)]
-    z_res = z_res[~np.isnan(z_res)]
-    return a_eff, z_res
+        a_eff[i], width[i], s_p_rho[i] = resonance(energy, i, eigvals, eigvecs, derived_matrix)
+    return a_eff, width, s_p_rho, eigvals, eigvecs

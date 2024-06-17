@@ -1,6 +1,7 @@
 import numpy as np
 from time import time
 from tqdm.autonotebook import tqdm as tqdm
+import pickle
 
 from result import Result
 from dispersors import *
@@ -75,16 +76,28 @@ def compute_resonances_per_energy(energy,input:Input ,length = 70, p=0.1):
     distances = np.zeros((dispersor_set.shape[0], dispersor_set.shape[0]))
     distances = distances_between_dispersors(distances_matrix=distances, dispersor_set=dispersor_set)
     M_matrix_inf = M_inf(k=k, distances=distances)
-    a_eff, z_res = resonances(energy, M_matrix_inf, distances, input)
-    return a_eff, z_res
+    # s_p_rho is the Participation ratio
+    a_eff, width, s_p_rho, eigvals, eigvecs = resonances(energy, M_matrix_inf, distances, input)
+    s_p = s_p_rho/p
+    return a_eff, width, s_p, M_matrix_inf, eigvals, eigvecs
 
 @timer
 def compute_resonances_total(input:Input , length, occupation_probability,results=[]):
     settings = input.settings_energy_sweep
+    with open("./out/info_last_exec.txt", "w") as f:
+        f.write(str(input))
     energies = np.arange(settings["min"], settings["max"], settings["step"])
-    print(f"Energy step: {settings['step']}, Actual energy step: {energies[1]-energies[0]}")
     for energy in tqdm(energies):
-        a_eff, z_res = compute_resonances_per_energy(energy,input ,length=length, p=occupation_probability)
-        for z_res, a_eff in zip(z_res, a_eff):
-            results.append(Result(z_res, a_eff, energy=energy))
+        a_eff, widths, s_p, m_inf, eigvals, eigvecs = compute_resonances_per_energy(energy,input ,length=length, p=occupation_probability)
+        for a_eff, width, s_p in zip(a_eff, widths, s_p):
+            results.append(Result(imag_resonance=width, 
+                              a_eff=a_eff, 
+                              energy=energy, 
+                              s_p=s_p, 
+                              m_inf=m_inf, 
+                              spectrum=eigvals, 
+                              eigstates=eigvecs)
+                           )
+    with open('./out/results.pkl', 'wb') as f:
+        pickle.dump(results, f)
     return results
