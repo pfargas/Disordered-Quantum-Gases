@@ -2,6 +2,7 @@ import numpy as np
 from time import time
 from tqdm.autonotebook import tqdm as tqdm
 import pickle
+import os
 
 from result import Result
 from dispersors import *
@@ -37,8 +38,13 @@ class Input:
 
     def read_inputs(self, filename):
         import json
-        with open(filename) as f:
-            inputs = json.load(f)
+        try:
+            with open(filename) as f:
+                inputs = json.load(f)
+        except FileNotFoundError:
+            print("File not found")
+            print(f"Current working directory: {os.getcwd()}")
+            print(f"Files in the current directory: {os.listdir()}")
         return inputs
 
     def __str__(self):
