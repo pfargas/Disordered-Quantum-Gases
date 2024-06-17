@@ -24,7 +24,7 @@ def main(filename=None):
     histogram.plot()
     return results
 if __name__ == '__main__':
-    filename = "clean_code/inputs.json"
+    filename = "./inputs.json"
     input_reader = Input(filename)
     results = compute_resonances_total(input_reader, input_reader.length, input_reader.occupation_probability)
     # import csv
