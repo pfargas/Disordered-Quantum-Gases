@@ -98,6 +98,6 @@ def compute_resonances_total(input:Input , length, occupation_probability,result
                               spectrum=eigvals, 
                               eigstates=eigvecs)
                            )
-    with open('./out/results.pkl', 'wb') as f:
+    with open('./results.pkl', 'wb') as f:
         pickle.dump(results, f)
     return results
