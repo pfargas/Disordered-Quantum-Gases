@@ -59,4 +59,4 @@ def resonances(energy, M_inf,distances, input):
     derived_matrix = derivative_M_inf_E(k, distances)
     for i in tqdm(range(M_inf.shape[0]), desc=f"Diagonalization time: {end-start:.2f}\n Computing resonances", leave=True):
         a_eff[i], width[i], s_p_rho[i] = resonance(energy, i, eigvals, eigvecs, derived_matrix)
-    return a_eff, width, s_p_rho, eigvals, eigvecs
+    return a_eff, width, s_p_rho

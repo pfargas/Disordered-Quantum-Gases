@@ -82,10 +82,11 @@ def compute_resonances_per_energy(energy,input:Input ,length = 70, p=0.1):
     distances = np.zeros((dispersor_set.shape[0], dispersor_set.shape[0]))
     distances = distances_between_dispersors(distances_matrix=distances, dispersor_set=dispersor_set)
     M_matrix_inf = M_inf(k=k, distances=distances)
+    np.savez_compressed(f"./M_inf_{energy:.4f}.npz", M_matrix_inf)
     # s_p_rho is the Participation ratio
-    a_eff, width, s_p_rho, eigvals, eigvecs = resonances(energy, M_matrix_inf, distances, input)
+    a_eff, width, s_p_rho = resonances(energy, M_matrix_inf, distances, input)
     s_p = s_p_rho/p
-    return a_eff, width, s_p, M_matrix_inf, eigvals, eigvecs
+    return a_eff, width, s_p
 
 @timer
 def compute_resonances_total(input:Input , length, occupation_probability,results=[]):
@@ -94,15 +95,12 @@ def compute_resonances_total(input:Input , length, occupation_probability,result
     #     f.write(str(input))
     energies = np.arange(settings["min"], settings["max"], settings["step"])
     for energy in tqdm(energies):
-        a_eff, widths, s_p, m_inf, eigvals, eigvecs = compute_resonances_per_energy(energy,input ,length=length, p=occupation_probability)
+        a_eff, widths, s_p = compute_resonances_per_energy(energy,input ,length=length, p=occupation_probability)
         for a_eff, width, s_p in zip(a_eff, widths, s_p):
             results.append(Result(imag_resonance=width, 
                               a_eff=a_eff, 
                               energy=energy, 
-                              s_p=s_p, 
-                              m_inf=m_inf, 
-                              spectrum=eigvals, 
-                              eigstates=eigvecs)
+                              s_p=s_p)
                            )
     with open('./results.pkl', 'wb') as f:
         pickle.dump(results, f)
