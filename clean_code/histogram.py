@@ -17,7 +17,7 @@ class Histogram:
         self.delta_energy = settings.settings_energy_histogram["step"]
         self.delta_a_eff = settings.settings_a_eff_histogram["step"]
         self.delta_surface = self.delta_energy*self.delta_a_eff
-        print(self.n_energies)
+        self.participation_surface_threshold = 9.5
         self.compute_width_histogram() if compute_width else self.compute_histogram()
     def compute_histogram(self):
         for result in tqdm(self.results):
@@ -31,7 +31,7 @@ class Histogram:
         for result in tqdm(self.results):
             energy_index = result.energy_index(self.min_energy, self.max_energy, self.n_energies)
             a_eff_index = result.a_eff_index(self.min_ln_a_eff, self.max_ln_a_eff, self.n_ln_a_eff)
-            if a_eff_index!=-1 and energy_index!=-1 and result.participation_surface<9.5:
+            if a_eff_index!=-1 and energy_index!=-1 and np.sqrt(result.participation_surface)<self.participation_surface_threshold:
                 try:
                     self.histogram[a_eff_index, energy_index]+=(result.width)
                     number_of_resonances[a_eff_index, energy_index]+=1
