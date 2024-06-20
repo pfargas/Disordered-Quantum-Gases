@@ -3,6 +3,7 @@ from time import time
 from tqdm.autonotebook import tqdm as tqdm
 import pickle
 import os
+from scipy.special import hankel1
 
 from result import Result
 from dispersors import *
@@ -84,9 +85,9 @@ def compute_resonances_per_energy(energy,input:Input ,length = 70, p=0.1):
     M_matrix_inf = M_inf(k=k, distances=distances)
     np.savez_compressed(f"./M_inf_{energy:.4f}.npz", M_matrix_inf)
     # s_p_rho is the Participation ratio
-    a_eff, width, s_p_rho = resonances(energy, M_matrix_inf, distances, input)
+    a_eff, width, s_p_rho, eigvals, eigvecs = resonances(energy, M_matrix_inf, distances, input)
     s_p = s_p_rho/p
-    return a_eff, width, s_p
+    return a_eff, width, s_p, eigvals, eigvecs
 
 @timer
 def compute_resonances_total(input:Input , length, occupation_probability,results=[]):
@@ -95,7 +96,7 @@ def compute_resonances_total(input:Input , length, occupation_probability,result
     #     f.write(str(input))
     energies = np.arange(settings["min"], settings["max"], settings["step"])
     for energy in tqdm(energies):
-        a_eff, widths, s_p = compute_resonances_per_energy(energy,input ,length=length, p=occupation_probability)
+        a_eff, widths, s_p,_,_ = compute_resonances_per_energy(energy,input ,length=length, p=occupation_probability)
         for a_eff, width, s_p in zip(a_eff, widths, s_p):
             results.append(Result(imag_resonance=width, 
                               a_eff=a_eff, 
@@ -105,3 +106,95 @@ def compute_resonances_total(input:Input , length, occupation_probability,result
     with open('./results.pkl', 'wb') as f:
         pickle.dump(results, f)
     return results
+
+def wavefunctions(positions, energies, input:Input, ln_a_eff=0 ,radius=150, p=0.1):
+    """
+    Inputs:
+    positions: list of floats, positions in which the wavefunction will be computed
+    energies: list of floats, energies in which the wavefunction will be computed. The output will be a wavefunction for each energy
+    ln_a_eff: float, natural logarithm of the effective scattering length that one want to explore
+    input: Input object, contains the settings for the simulation
+    radius: float, radius of the circular lattice
+    p: float, occupation probability of the dispersors
+    
+    Output:
+    wavefunctions: array of shape (len(positions), len(energies)), contains the wavefunction for each energy in columns (first column is the wavefunction for the first energy in energies, and so on)
+    """
+    wavefunctions = np.zeros((len(positions), len(energies)), dtype=np.complex128)
+    dispersor_set = generate_circular_lattice_dispersors(radius=radius, p=p)
+    distances = np.zeros((dispersor_set.shape[0], dispersor_set.shape[0]))
+    distances = distances_between_dispersors(distances_matrix=distances, dispersor_set=dispersor_set)
+    global_result = []
+    a_eff_slice=0
+    index_a_eff = Result(imag_resonance=1e-6, a_eff=np.exp(ln_a_eff), energy=0.1, s_p=0.0).a_eff_index(-2.5, 2.5, 714)
+    for energy_index, energy in enumerate(energies):
+        k = np.sqrt(2*energy)
+        # Compute matrix M_inf
+        M_matrix_inf = M_inf(k=k, distances=distances)
+        # Diagonalize matrix and get widths
+        a_eff, widths, _, eigvals, eigvecs = resonances(energy, M_matrix_inf, distances, input)
+        # Loop over the results
+        for i,(a_eff, width) in enumerate(zip(a_eff, widths)):
+            mock_result = Result(imag_resonance=width, a_eff=a_eff, energy=energy, s_p = 0.0)
+            # if the result is inside the slice of a_eff that we want and it is a resonance
+            if mock_result.a_eff_index(-2.5,2.5,714)==index_a_eff and mock_result.is_resonance(tolerance=1e3):
+                # global_result is a list of tuples (Result, index), in which there are only values with the given scattering length and the index
+                global_result.append([Result(imag_resonance=width, a_eff = a_eff, energy=energy, s_p=0.0), i])
+        # CHOOSE THE MINIMUM OR MAXIMUM WIDTH
+        minimum = True
+        if minimum:
+            min_width = 1e-6
+            current_idx=0
+            for result, idx in global_result:
+                if result.width<min_width:
+                    min_width = result.width
+                    current_idx = idx
+            print(min_width)
+        else:
+            max_width = 1e-6
+            current_idx=0
+            for result, idx in global_result:
+                if result.width>max_width:
+                    max_width = result.width
+                    current_idx = idx
+            print(max_width)
+        wavefunctions[:,energy_index] = wavefunction(positions, k, eigvecs[:,current_idx], dispersor_set)
+    print(len(global_result))
+    return wavefunctions
+
+def wavefunction(r_vec, k, eigenvector, dispersors):
+    wavefunction = np.zeros(r_vec.shape[0], dtype=np.complex128)
+    for i,r in tqdm(enumerate(r_vec)):
+        distances = np.linalg.norm(dispersors-r, axis=1)
+        free_propagator = hankel1(0, k*distances)
+        wavefunction[i] = -1j/2*np.sum(free_propagator*eigenvector)
+    # normalization
+    wavefunction = wavefunction/np.linalg.norm(wavefunction)
+    return wavefunction
+
+def generate_points_lattice(length):
+    points = []
+    for i in range(-length, length):
+        for j in range(-length, length):
+            points.append([i-0.5,j-0.5])
+    return np.array(points)
+
+if __name__ == "__main__":
+    import matplotlib.pyplot as plt
+    #test wavefunction
+    with open("./debug.txt", "w") as f:
+        f.write("")
+    with open("./widths.txt", "w") as f:
+        f.write("")
+    inputs = Input("./clean_code/inputs.json")
+    r_vector = generate_points_lattice(100)
+    energies = np.array([0.005])#, 0.06, 0.1])
+    wf = (wavefunctions(r_vector,energies, input=inputs, radius=90))
+    plt.scatter(r_vector[:,0], r_vector[:,1], c=np.log(np.abs(wf[:,0])**2), s=1.5)
+    theta = np.linspace(0, 2*np.pi, 100)
+    plt.plot(70*np.cos(theta), 70*np.sin(theta), c="black")
+    plt.colorbar(label="$\ln(|\psi (r)|^2)$")
+    plt.axis("equal")
+    plt.xlabel("x (d)")
+    plt.ylabel("y (d)")
+    plt.show()

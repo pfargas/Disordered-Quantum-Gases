@@ -56,7 +56,10 @@ class Histogram:
         plt.colorbar()
         plt.show()
         if hasattr(self, "statistics"):
-            plt.pcolor(energy, ln_a_eff, self.statistics)
+            import matplotlib.colors as colors
+            plt.pcolor(energy, ln_a_eff, self.statistics,
+                       norm=colors.LogNorm(vmin=1, vmax=300)
+            )
             plt.title("Number of states per bin")
             plt.xlabel("$E/E_0$")
             plt.ylabel("$\ln(a_{eff}/d)$")
