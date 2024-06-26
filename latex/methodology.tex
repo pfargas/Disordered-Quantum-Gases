@@ -2,19 +2,19 @@
 
 \subsection{Framework used in this work}
 
-This work has followed the mathematical formalism started in [Matterwave localisation in disordered cold atom lattices] and followed by [Massignan 2006] and [Quantitative study of two...]. 
+This work has followed the mathematical formalism started in \cite{gavishMatterwave2005} and followed by \cite{massignanThreedimensional2006} and \cite{antezzaQuantitativeStudyTwo2010}. 
 
 The main object is the Green's function (or propagator) of the system. This mathematical construct can be suitable for studying the transport properties of systems, as it can be used to solve the Schrödinger equation for a given potential. The free Green's function is defined as the inverse of the operator $E-H_0$, where $H_0$ is the Hamiltonian of the system and $E$ is the energy of the system (see section []). 
 
 \subsection{Criterium for localization}
 
-\textcolor{red}{Why does the green's function has to satisfy the same boundary conditions as the wave function?}
-
-The usual criterium for determining that some state is localized is the exponential decay of the wave function. This can be seen in the Green's function, as the Green's function is the propagator of the system, and it can be used to determine the wave function of the system.
+The usual criterium for determining that some state is localized is the exponential decay of the wave function. This can be seen in the Green's function, as if the wavefunction vanishes exponentially, the Green's function will also vanish exponentially.
 
 But, one can see that this criterium could be not enough. Even though it is true that Anderson localization implies an exponential decay of the wave function, there is another situation that leads to this decay: if we inject particles in a spectral gap of the system, the wave function will decay exponentially. This is not Anderson localization, but a consequence of the spectral gap [reference exponential decay of correlation function in a spectral gap].
 
 \subsection{Scaling theory: 2D as a critical dimension}
+
+One question that could arise before making the study would be if there even exists such states. Using arguments from the renormalization group technique, we can see that even though 2D is a kind of special dimension, the presence of localized states is expected.
 
 To study the presence of localization in 2D, we can use an argument derived from the renormalization group. The main point is to study the influence of disorder in the electric resistance $V=IR$, where $V$ is the potential applied, $R$ the resistance and $I$ the intensity, and connect the result with the microscopic description of the system $j=\sigma E$, where $j$ is the microscopic current, $E$ the electric field and $\sigma$ is the conductivity. We define the conductance $g$ as the inverse of the resistance. 
 
@@ -54,7 +54,6 @@ And, following Mott idea, at strong disorder, all wavefunctions are localized, m
 
 Briefly discuss the scaling theory for the conductivity. 3D mobility edge and 1D always localized. [Anderson and QFT condensed matter book]
 
-\textcolor{red}{should this be in state of the art?}
 \textcolor{red}{Should I comment why does disorder leads to localization? Constructive and destructive interference paths in Feynman path integral.}
 
 \subsection{Formulation of the problem}
@@ -69,6 +68,7 @@ Where $z\in\mathbb C$ is an extension of the energy to the complex plane. The fo
 
 \begin{equation}
     G(\vb{r},\vb{r}_0)=g_0(\vb{r}-\vb{r}_0)+\sum_{i=1}^N D_i g_0(\vb{r}-\vb{r}_i)
+    \label{eq:formal_solution}
 \end{equation}
 
 Where $g_0(\vb{r})$ is the 2D free Green's function:
@@ -78,23 +78,130 @@ Where $g_0(\vb{r})$ is the 2D free Green's function:
     g_0(\vb{r})=-\frac{im}{2\hbar^2}H_0^{(1)}(kr)
 \end{equation}
 
-Then, the secondary source amplitudes $D_i$ are determined by imposing the contact conditions \textcolor{red}{What is M?}
+Then, the secondary source amplitudes $D_i$ are determined by imposing the contact conditions \textcolor{red}{What is M? Put how to compute it?}:
 
-\subsection{Numerical methods: Diagonalisation of M matrix and simulations}
+\begin{equation}
+    \sum_{j=1}^N M_{ij}D_j=-\frac{\pi\hbar ^2}{m}g_0(\vb{r}_i-\vb{r}_0)
+\end{equation}
 
-The final objective is to determine the density of resonances \textcolor{red}{!} which are localized, given a scattering length $a_{eff}$. To do this, the first goal is to construct a histogram in which each bin consist on an energy interval $[E,E+\Delta E]$, and a scattering length interval $[a_{eff},a_{eff}+\Delta a_{eff}]$, in which the number of localized states is counted \textcolor{red}{(?)}. To find the resonances, we take into account that a ressonance is a pole of the Green's function. The fact that the Green's function is formally written proportional to the inverse of the matrix $M$, suggests that the eigenvalues of the matrix $M$ will be related to the resonances of the system.
+Where $M_{ij}$ is the key mathematical object of the problem, defined as:
 
+\begin{equation}
+    M_{ij}=\begin{cases}
+        \frac{\pi\hbar}{m}g_0(\vb{r}_i-\vb{r}_j)&i\neq j\\
+        -\text{i}\frac{\pi}{2}+\ln\qty(\frac{ka_{eff}e^{\gamma}}{2})&i=j
+    \end{cases}
+\end{equation}
 
-NEWTON METHOD TO FIND RESONANCES:
+Where $a_{eff}$ is the effective scattering length of the system, and $\gamma$ is the Euler-Mascheroni constant. The derivation of this matrix comes from the expansion of the propagator up to second order in the Dyson equation. 
 
-\begin{itemize}
-    \item Given a lattice of dispersors, set an energy $E>0$ and diagonalize $M$ such that you have a set of eigenvalues $m_i$.
-    \item Compute $a_{eff}$ such that the real part of $m_i$, a given eigenvalue of $M$, is zero.
-    \item $a_{eff}$ and $E$ are the axis of the histogram.
-    \item Compute first step in Newton's method:
-    \begin{equation}
-        z_{res}=E \underbrace{-\text{i}\frac{\text{Im}(m^{\infty}_i)}{\frac{d m_i^{\infty}}{dE}}}_{\text{newton\_step in the code}}
+Then, the formal solution \cref{eq:formal_solution} can be expressed in terms of this $M$ matrix, which just depends on the configuration of the scatterers, by inverting it:
+
+\begin{equation}
+    G(\vb{r},\vb{r}_0)=g_0(\vb{r}-\vb{r}_0)-\frac{\pi\hbar^2}{m}\sum_{i=1}^N \qty(\sum_{j=1}^N M_{ij}^{-1}g(\vb{r}_j-\vb{r}_0)) g_0(\vb{r}-\vb{r}_i)
+\end{equation}
+
+Which, rearranging terms, can be expressed as:
+
+\begin{equation}
+    G(\vb{r},\vb{r}_0)=g_0(\vb{r}-\vb{r}_0)-\frac{\pi\hbar^2}{m}\sum_{i,j=1}^N g_0(\vb{r}-\vb{r}_i) M_{ij}^{-1}g(\vb{r}_j-\vb{r}_0)
+\end{equation}
+
+Then, we can write the matrix $M$ in its diagonal basis, such that $M^D_{ij}=\delta_{ij}m_i$, where $m_i$ are the eigenvalues of the matrix $M$. When a matrix is diagonal, the inverse of the matrix is also diagonal, and the diagonal elements are the inverse of the diagonal elements of the original matrix. Then, we can write the $i,j$-th element of $M^{-1}$ as $M_{ij}^{-1}=\sum _{n=1}^N\frac{1}{m_n}D_i^{(n)}D_j^{(n)}$ with $D_i^{(n)}$ being the $i$-th component of the eigenvector associated to the $n$-th eigenvalue. Finally, the Green's function can be written as:
+
+\begin{equation}
+    G(\vb{r},\vb{r}_0)=g_0(\vb{r}-\vb{r}_0)-\frac{\pi\hbar^2}{m}\sum_{i,j=1}^N g_0(\vb{r}-\vb{r}_i) \sum _{n=1}^N\frac{1}{m_n}D_i^{(n)}D_j^{(n)} g(\vb{r}_j-\vb{r}_0)
+    \label{eq:final_gf}
+\end{equation}
+
+The propagator in quantum mechanics can also be described as the inverse of the operator $E-H_0$, where $H_0$ is the Hamiltonian of the system and $E$ is the energy of the system. The Green's function expansion in eigenstates of the hamiltonian is:
+
+\begin{equation}
+    G(\vb{r},\vb{r}_0)=\sum_n \frac{\psi_n(\vb{r})\psi_n^*(\vb{r}_0)}{E-E_n}
+\end{equation}
+
+If we analytically extend the energy to the complex plane $E\to z\in \mathbb C$, we can see that the poles of the Green's function are the eigenvalues of the Hamiltonian. Given a particular complex energy $z_{res}$, we say a state is a resonance of the system if the Green's function has a pole at that energy. The Green's function can be written as:
+
+\begin{equation}
+    G(z\to z_{res}; \vb{r},\vb{r}_0)\sim\frac{\psi_{res}(\vb{r})\psi_{res}^*(\vb{r}_0)}{z-z_{res}}
+    \label{eq:wf_resonance}
+\end{equation}
+
+Which means that a pole in the Green's function is a resonance of the system, which means a state with a very long lifetime. Inspecting \cref{eq:final_gf}, we can see that if a given eigenvalue of the matrix $M$ is zero, the Green's function will have a pole at that energy. This is the criterium used to find the localized states in the system. The problem has been reduced to a problem of finding the eigenvalues of the matrix $M$.
+
+\subsubsection{Wavefunction of a resonance}
+
+Given a set of random dispersors, the matrix $M$ can have some eigenvalue which is zero $m_0(z_{res})=0$. In this case, we can write the wavefunction in a small region around the complex energy $z_{res}$ comparing the functional form of \cref{eq:wf_resonance} and \cref{eq:final_gf}. First of all, we can see that if $m_0(z_{res})=0$, $\frac{1}{m_0(z_{res})}\sim \infty$, then $M^{-1}_{ij}=\frac{1}{m_0(z_{res})}D_i^{(0)}D_j^{(0)}$. Taking the Talyor series of ${m_0(z)}$ around $z_{res}$, we can see that:
+\begin{equation}
+    m_0(z)=\cancelto{0}{m_0(z_{res})}+m_0'(z_{res})(z-z_{res})+\dots
+\end{equation}
+
+Thus, the Green's function can be written as:
+
+\begin{equation}
+    G(z\to z_{res};\vb{r},\vb{r}_0)\sim-\frac{\pi\hbar^2}{m}\sum_{i,j=1}^N g_0(\vb{r}-\vb{r}_i) \frac{1}{m_0'(z_{res})(z-z_{res})}D_i^{(0)}D_j^{(0)} g(\vb{r}_j-\vb{r}_0)
+\end{equation}
+
+And comparing with \cref{eq:wf_resonance}, we can see that the wavefunction of a localized state is proportional to:
+
+\begin{equation}
+    \psi_{res}(\vb{r})\propto \sum_{i=1}^N g_0(\vb{r}-\vb{r}_i)D_i^{(0)}
+    \label{eq:wavefunction_resonance}
+\end{equation}
+
+\subsection{Finding ressonances}
+
+To find the localized states, we could guess loads of energies, build the matrix $M$ and check its eigenvalues. Even though this could be a method which this work tried, and it is explored in \cite{massignanThreedimensional2006}, we will use the one step Newton method proposed in \cite{antezzaQuantitativeStudyTwo2010}. The problem is to find the energy $E_{res}$ such that:
+
+\begin{equation}
+    m_i(E_{res})=0
+\end{equation}
+
+Where $m_i$ is an eigenvalue of the matrix $M$. Before trying to find the energy, we have to notice that $M$ depends also on the scattering length $a_{eff}$, but, using the properties of logarithms, we can split the matrix $M$ in two parts, one that depends on the energy and another that depends on the scattering length:
+
+\begin{equation}
+    M(E,a_{eff})=\ln\frac{a_{eff}}{d}\mathbb I + M^{\infty}
+\end{equation}
+
+Which is the same step as in \cite{massignanThreedimensional2006}, but in 2D. Notice then that, because any basis is an eigenbasis of the identity matrix, the eigenvalues of the matrix $M$ are the eigenvalues of the matrix $M^{\infty}$ plus $\ln(a_{eff}/d)$:
+
+\begin{equation}
+    m_i(E,a_{eff})=m_i^{\infty}(E)+\ln\frac{a_{eff}}{d}
+\end{equation}
+
+From here, the newton step is computed as:
+
+\begin{enumerate}
+    \item Choose an initial energy guess $E\in \mathbb R$.
+    \item Compute $a_{eff}$ such that the real part of $m_i(E)$ is zero:
+    \begin {equation}
+        \ln \frac{a_{eff}}{d}=-\text{Re}(m_i^{\infty}(E))\Rightarrow a_{eff}/d=\exp(-\text{Re}(m_i^{\infty}(E)))
     \end{equation}
-    \item Hellmann-Feynman theorem to compute the derivative.
-    \item With the expression $z_{res}=E_{res}-\text{i}\hbar \Gamma/2$ check that $\Gamma$ is small enough.
-\end{itemize}
+    \item Then, $z_{res}$ can be computed as:
+    \begin{equation}
+        z_{res}=E-\text{i}\frac{\text{Im}(m_i^{\infty}(E))}{\frac{d m_i^{\infty}}{dE}}
+    \end{equation}
+\end{enumerate}
+
+To compute the derivative of the eigenvalue, we can use the Hellmann-Feynman theorem, which states that the derivative of the eigenvalue of a matrix with respect to a parameter is the expectation value of the derivative of the potential with respect to the parameter:
+
+\begin{equation}
+    \frac{d m_i^{\infty}}{dE}=\bra{D^i}\dv{M^{\infty}}{E}\ket{D^i}
+\end{equation}
+
+Where $\ket{D^i}$ is the eigenvector associated to the eigenvalue $m_i^{\infty}$. The derivative of the matrix $M^{\infty}$ with respect to the energy is:
+
+\begin{equation}
+    \dv{M^\infty}{E}=\dv{M^\infty}{k}\dv{k}{E}=\dv{M^\infty}{E}\frac{1}{k}
+\end{equation}
+
+Where $k$ is the wavevector of the system. The derivative of the matrix $M^{\infty}$ with respect to the wavevector is:
+
+\begin{equation}
+    \dv{M^\infty}{k}=\begin{cases}
+        \frac{\text{i}\pi}{2}H_1^{(1)}(kr_{ij})r_{ij}&i\neq j \\
+        \frac{1}{k}& i=j
+    \end{cases}
+\end{equation}
+
+The result of the algorithm can be compared with \cref{eq:resonance}, where we can see that the imaginary part of the energy corresponds to the time width of the ressonance. Following \cite{antezzaQuantitativeStudyTwo2010}, we see that if the imaginary part of this operation is small enough, the method converges in just a single step. For the real part, we checked that when doing the histogram (see \cref{fig:loc_states}), the shift in the value after the step, and the initial guess was smaller than the bin size used, and could be neglected.

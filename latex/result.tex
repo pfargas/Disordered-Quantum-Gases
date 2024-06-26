@@ -58,3 +58,106 @@ Finally, thanks to some training done externally, and by rethinking the way in w
     \item The transposed matrix is added to the upper triangular matrix.
     \item Finally, the diagonal is added.
 \end{enumerate}
+
+\subsection{Density of localized states}
+
+The sign of a localized state is the exponential decay of the wavefunction $\psi\propto e^{-\frac{r}{\xi}}$ far from the source. When working with the Green's function, we don't work with exactly the wavefunction, but with the correlation function. In this case, a localized state has an exponential decay of the correlator, but the exponential decay of the correlator does not imply localization. This is because the state can lie in a spectral gap of the system, where the correlator decays exponentially [REFERENCE], and, in fact, this is shown in the appendix A of [Massignan Castin 2006]. 
+
+In the scope of this study, we will study the density of localized states, that is, we will study the presence of localized states as a function of the energy $E$ of the matter wave. This study lets us discard the spectral gap, as the spectral gap is an energy range in which no state is allowed.
+
+Following \cite{antezzaQuantitativeStudyTwo2010}, a localized state is expected to correspond to a very narrow ressonance inside the scattering medium. That is, a localized state corresponds to a pole of the analytically continued Green's function in the lower plane $\Gamma >0$: \textcolor{red}{Why is this? and why gamma over 2?}
+
+\begin{equation}
+    z_{res}=E_{res}-i\hbar \frac{\Gamma}{2}
+    \label{eq:resonance}
+\end{equation}
+
+Using a disordered circular lattice of scatterers of radius $R=150d$ and occupation probability $p=0.1$, for a mean number of scatterers $\langle N\rangle \approx 7\cdot 10^3$, we can compute for some energies the mean width of the ressonances found. The results are shown in \cref{fig:loc_states}. By construction of the matrix $M$, we can see that the number of eigenvalues of the matrix is equal to the number of dispersors, meaning in this case that we will have for each energy $E$ around $7\cdot 10^3$ potential ressonances. Applying the Newton's method mentioned before, we can identify a scattering length $a_{eff}$ for each eigenvalue of the matrix, which is shown in \cref{fig:num_states}. It is interesting to note that for a small value of the energy, the number of states found for $a_{eff}<d$ (or $\ln(a_{eff}/d)<0$) is zero, meaning that there are no states available there. For this reason, we will particularize on the states with $a_{eff}=d$.
+
+We can define the surface participation ratio as:
+
+\begin{equation}
+    S_p=\frac{1}{\rho \sum_{i=1}^N|D_i|^4}
+\end{equation}
+
+Where $\rho\equiv \frac{p_{occ}}{d^2}$ is the average density of scatterers, and $D_i$ is the $i$-th component of the eigenvector corresponding to the state. Looking at the wavefunction \cref{eq:wavefunction_resonance}, we can see that this quantity is inversely proportional to the Inverse Participation Ratio, which in general is defined as:
+
+\begin{equation}
+    IPR=\sum_{i=1}^N|\psi_i|^4
+\end{equation}
+
+And it is a usual metric to determine how much a state is spreaded through the system. In lattice systems, an IPR of 1 means that the state is localized in a single site, while an IPR of $N$ means that the state is spreaded through all the system.
+
+Then, if we search for states with $S_p^{\frac{1}{2}}<\alpha d^2$, with $\alpha>0$, we will throw away states which are spreaded through the system.
+
+\begin{figure}[ht]
+    \centering
+    \includegraphics[width=0.7\textwidth]{img/histogram.png}
+    \caption{Width $\Gamma$ of the ressonances as a function of the energy $E$ of the matter wave. The color of each bin is computed as the base 10 logarithm off the arithmetic mean of the width of the ressonances in that bin, that is, for each bin $i$ we compute $\log_{10}\left(\frac{1}{N_i}\sum_{j\in i}\Gamma_j\right)$, where $N_i$ is the number of ressonances in the bin. The width of the bins is $\delta E=0.01E_0$ and $\delta \ln a_{eff}=0.007d$. The system used is a disordered circular lattice of scatterers of radius $R=150d$ and occupation probability $p=0.1$. The result has been filtered such that the participation surface of the state is $S_p^{\frac{1}{2}}<9.5d$.}
+    \label{fig:loc_states}
+\end{figure}
+
+\begin{figure}[ht]
+    \centering
+    \includegraphics[width=0.7\textwidth]{img/statistics.png}
+    \caption{Number of states $N_i$ found for each bin $i$. The color scale is in logarithm scale, a white value means that no state was found in that bin. The parameters used are the same as in \cref{fig:loc_states}.}
+    \label{fig:num_states}
+\end{figure}
+\clearpage
+
+\subsection{The wavefunction}
+
+With \cref{eq:wavefunction_resonance}, we can explore the different kinds of wavefunction that we can find in the system. In \cref{fig:localized_state} we can see the wavefunction of a localized state with energy $E=0.005E_0$ and scattering length $a_{eff}=d$. As it can be seen in the picture the wavefunction only spans a few units of $d$ around its maximum, and decays exponentially far from the source.
+
+\begin{figure}[ht]
+    \centering
+    \includegraphics[width=1\linewidth]{img/loc_both.png}
+    \caption{\textit{Left}: Wavefunction of a localized state with energy $E=0.005E_0$ and scattering length $a_{eff}=d$ in a lattice of radius $R=80d$ . \textit{Right} Logarithm of the wavefunction. }
+    \label{fig:localized_state}
+\end{figure}
+
+Also, we can see that the inverse of the lifetime, or the $\Gamma$ is really small. Remembering that the lifetime of a state is $\tau=\frac{1}{\Gamma}$, we can see that the lifetime of the state is really long. This is a typical behaviour of a localized state, as the state is confined in a region of space in which the classical particles are not. We will say that a state is localized if the lifetime of the state is longer than $10^6$ times the characteristic time of the system, that is, if $\Gamma < 10^{-6}E_0/\hbar$.
+
+The following found state, \cref{fig:border_state}, is a state with energy $E=0.005E_0$ and scattering length $a_{eff}=d$. This state is not localized, but for another reason: because the state is in the border of the system, its lifetime (or the mean time to escape the system) is shorter than the threshold. This is intuitive to think, as if the state is in the border of the system, it will have a higher probability of escaping the system.
+
+
+\begin{figure}[ht]
+    \centering
+    \includegraphics[width=1\linewidth]{img/Delocish.png}
+    \caption{\textit{Left}: Wavefunction of a localized state with energy $E=0.005E_0$ and scattering length $a_{eff}=d$ in a lattice of radius $R=80d$ . \textit{Right} Logarithm of the wavefunction. }
+    \label{fig:border_state}
+\end{figure}
+
+A complete delocalization of the state is shown in \cref{fig:deloc_state}. This state has energy $E=0.005E_0$ and scattering length $a_{eff}=d$. The state is spreaded through the whole system, and it is not localized.
+
+\begin{figure}[ht]
+    \centering
+    \includegraphics[width=1\linewidth]{img/other_deloc.png}
+    \caption{\textit{Left}: Wavefunction of a surface state with energy $E=0.005E_0$ and scattering length $a_{eff}=d$ in a lattice of radius $R=80d$ . \textit{Right} Logarithm of the wavefunction. }
+    \label{fig:deloc_state}
+\end{figure}
+
+As we see in the histogram \cref{fig:loc_states}, and can be observed also in \cite{antezzaQuantitativeStudyTwo2010}, as we increase the energy, the number of localized states decreases. An example of a delocalized state is shown in \cref{fig:high_energy}, with energy $E=0.5E_0$ and scattering length $a_{eff}=d$. The state is spreaded through the whole system.
+
+\begin{figure}[ht]
+    \centering
+    \includegraphics[width=1\linewidth]{img/high_energy0.5.png}
+    \caption{\textit{Left}: Wavefunction of a delocalized state with energy $E=0.005E_0$ and scattering length $a_{eff}=d$ in a lattice of radius $R=80d$ . \textit{Right} Logarithm of the wavefunction. }
+    \label{fig:high_energy}
+\end{figure}
+
+Finally, we have to remember that we were computing this inverse of the lifetime with a one step Newton method. This method is only effective for finding resonances with a small width. If at the energy selected, the initial eigenvalue is not small enough, the method will not converge. This is shown in \cref{fig:weird_state}, where we can see that the state is actually not localized, but the lifetime seems to be small. In the title of the plot we can see that the result is a negative inverse of a lifetime, which doesn't make sense. This is a clear example of the limitations of the method used.
+
+\begin{figure}[ht]
+    \centering
+    \includegraphics[width=1\linewidth]{img/Weird_semiloc.png}
+    \caption{\textit{Left}: Wavefunction of a delocalized state with energy $E=0.5E_0$ and scattering length $a_{eff}=d$ in a lattice of radius $R=80d$ . \textit{Right} Logarithm of the wavefunction. }
+    \label{fig:weird_state}
+\end{figure}
+
+% \begin{figure}
+%     \centering
+%     \includegraphics[width=1.2\linewidth]{img/0.9_occupation_lattice.png}
+%     \caption{Number of states $N_i$ found for each bin $i$}
+%     \label{fig:localized state}
+% \end{figure}

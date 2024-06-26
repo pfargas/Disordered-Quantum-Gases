@@ -97,16 +97,26 @@ SHOULD I PUT HERE THE STUDY OF EFFICIENCY OF THE SIMULATION?
 
 %%% CONCLUSION AND FUTURE %%%
 \clearpage
-\section{Conclusions and future development: }
+\section{Conclusions and future development}
 
-2D SCATTERING IS A WEIRD TOPIC. NEEDS DEVELOPMENT. FEW REFERENCES AND ALL OF THEM DIFFERENT APPROACHES.
+This work has explored the Anderson localization phenomenon in a 2D disordered lattice of dispersors in the approximation of a contact interaction between the scatterers and the particles. As the phenomenon is a single particle interference effect, the study has been focused on the study of a single particle, (with a small generalization to a non-interacting Fermi gas) in the presence of the disorder.
+
+The results obtained have shown that the system can be insulating in some cases, specially at low energies and scattering lengths around $a_{eff}=d$. The system has been studied in a 2D square lattice, but the disorder can be extended to a full disorder without a lattice, and the results should be similar. The system in 3D has been more studied in the literature, as the 3D case presents a critical energy $E_c$, called mobility edge, that separates the localized states from the extended states. The 2D case does not have this critical energy, and the system can be insulating at any energy.
+
+The results have been obtained using the Green's function method, and the code has been optimized to be fast enough to be useful. The formalism, although a bit unintuitive at first glance, has proved to be useful to study the proposed problem, and the results have been consistent with the literature. 
+
+Personally, the most challenging part of the work has been the formalism of scattering theory, and starting from 2D, which is not the most common case in the literature. Other challenges have involved the optimization of the code, which has been one of the most time-consuming parts of the project, as the initial knowledge in efficient programming paradigms (such as parallelisation or vectorization) was not enough to understand why the first iterations of the code.
+
+In general, this work has been a good introduction to the study of Anderson localization, and the formalism of scattering theory.
+
+The study of this systems can be extended in a lot of ways. The first way could be to not consider the scatterers as point-like, but as a gaussian potential, which could lead to more richer physics in the system. If this was done, the formulation would change from top to bottom, as the matrix $M$ would not be present, and the analytical computations of the perturbative terms in the Dyson equation of the Green's function should be computed, but at the limit of dilute and narrow scatterers, those results should be retrieved. If we wanted to stay in the 2D point-like system, we could have studied the dependence of the density of localized states with the occupation probability.
 
 %%% BIBLIOGRAPHY %%%
 \newpage
 
 \medskip
 \bibliographystyle{unsrt}
-\bibliography{bibliography.bib}
+\bibliography{bib_TFM.bib}
 
 %%% ANNEX %%%
 \clearpage

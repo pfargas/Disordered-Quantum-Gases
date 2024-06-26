@@ -14,7 +14,9 @@ The aim of this work is to characterize the localization of a Fermi gas in a dis
 
 Arguably, the most known model for lattice systems is the Hubbard model. In it, the particles are described by the interplay between the kinetic and interaction energies. The Hubbard model is a simplified model that can describe the electronic structure of solids, where the electrons are confined to a lattice of atoms. The electrons can hop between the lattice sites and interact with each other when they are in the same site. If the interaction energy is much larger than the kinetic energy, the electrons will be localized in the lattice sites and the system will be an insulator. This phase is called the Mott insulator phase and the localized character is a many-body effect.  
 
-However, in disordered systems, the backscattering effects of a single particle with the disorder, can lead to a constructive interference of the wavefunction in some region of space, reducing the conductivity of the material in case of solid state materials. This is called weak localization and it is considered the precursor of the Anderson localization or strong localization phenomena. RANDOM WALK?
+However, in disordered systems, the backscattering effects of a single particle with the disorder, can lead to a constructive interference of the wavefunction in some region of space, reducing the conductivity of the material in case of solid state materials. This is called weak localization and it is considered the precursor of the Anderson localization or strong localization phenomena. 
+
+Anderson localization, or strong localization, is a wave phenomena in which the wavefunction of a particle is a square integrable function and decays exponentially far away. This means that the particle is confined in a region of space, in which classically it should not be localized. More details are given in the next section.
 
 \subsection{Objectives}
 
@@ -22,49 +24,19 @@ In this work we aim to study the localization of a non-interacting Fermi gas in 
 
 \begin{enumerate}
     \item Understand Anderson localization and 2D scattering theory.
-    \item Implement the numerical model proposed by [Massignan 2006] and [Quantitative study of two...], and try to reproduce their results.
-    \item Extend the argument to a system of non-interacting fermions
+    \item Implement the numerical model proposed by \cite{massignanThreedimensional2006} and \cite{antezzaQuantitativeStudyTwo2010}, and try to reproduce their results.
+    \item Build the wavefunctions and see the localization of the states.
+    \item Extend the argument to a system of non-interacting fermions.
 \end{enumerate}
 
-\subsection{Procedure}
+\subsection{Procedure and setbacks}
 
-Even though the formalism could be somewhat intimidating, and the theory of scattering in 2D is not trivial, if we take the results obtained in 2D in [Quantitative study...] the problem is simplified to an easy mathematical problem. However, the fact that we were not working with tools like Mathematica or Matlab, but with Python, made the implementation to be more challenging. Those kinds of scientific numerical software have a lot of built-in functions that can be directly used, such as code parallelisation or matrix operations. In the case of python, we had to investigate which libraries, techniques and data representation was the best for the problem. 
+Even though the formalism could be somewhat intimidating, and the theory of scattering in 2D is not trivial, if we take the results obtained in 2D in \cite{antezzaQuantitativeStudyTwo2010} the problem is simplified to an easy mathematical problem. However, the fact that we were not working with tools like Mathematica or Matlab, but with Python, made the implementation to be more challenging. Those kinds of scientific numerical software have a lot of built-in functions that can be directly used, such as code parallelisation or matrix operations. In the case of python, we had to investigate which libraries, techniques and data representation was the best for the problem. 
 
 Finally, the combination of vectorization of the operations with numpy, and parallelisation of the code using the multiprocessing library and numba, made the code fast enough to be useful.
 
-\subsection{Setbacks}
-
 The main setback of this work was the lack of experience in the formalism used, and the poor implementation of the own code. The first iteration of the code was too slow to be useful, due to the lack of knowledgement in optimization techniques. There has been a lot of time spent in understanding the formalism and the optimization of the code, with multiple tries in the code. 
 
-{An Introduction that clearly states the rationale of the thesis that includes:}
+\subsection{Units}
 
-\begin{enumerate}
-\item {Statement of purpose (objectives).}
-\item {Requirements and specifications.}
-\item {Methods and procedures, citing if this work is a continuation of another project or it uses applications, algorithms,
-software or hardware previously developed by other authors.}
-\item {Work plan with tasks, milestones and a Gantt diagram.}
-\item {Description of the deviations from the initial plan and incidences that may have occurred. }
-\end{enumerate}
-
-\bigskip
-
-{The minimum chapters that this thesis document should have are described below, nevertheless they can have different
-names and more chapters can be added.}
-
-\bigskip
-
-\subsection{Gantt Diagram}
-\label{ssec:gantt}
-\begin{figure}[H]
-    \centering
-    %\includegraphics[width=13cm]{img/diagram_gantt.png}
-    \input{gantt_diagrama.tex}
-    \caption[Project's Gantt diagram]{\footnotesize{Gantt diagram of the project}}
-    \label{fig:gantt}
-    For more information read the manual \cite{skalagantt} of Skala.
-\end{figure}
-
-\bigskip
-
-\subsection{Topic}
+The disordered system that we will be working with will be a circular simple cubic (4 nearest neighbours) lattice of dispersors with a distance between nearest neighbours $d$. The characteristic energy of the system is $E_0 = \frac{\hbar^2}{md^2}$, meaning that the characteristic time of the system is $\tau_0 = E_0/\hbar$. For the simulations, the units used are $\hbar=1$, $m=1$ and $d=1$. The energy of the system is then measured in units of $E_0$. That means that the wavevector $k$ can be expressed as function of the energy as $k = \sqrt{2E}$.

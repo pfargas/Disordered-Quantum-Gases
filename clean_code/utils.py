@@ -137,7 +137,7 @@ def wavefunctions(positions, energies, input:Input, ln_a_eff=0 ,radius=150, p=0.
         for i,(a_eff, width) in enumerate(zip(a_eff, widths)):
             mock_result = Result(imag_resonance=width, a_eff=a_eff, energy=energy, s_p = 0.0)
             # if the result is inside the slice of a_eff that we want and it is a resonance
-            if mock_result.a_eff_index(-2.5,2.5,714)==index_a_eff and mock_result.is_resonance(tolerance=1e3):
+            if mock_result.a_eff_index(-2.5,2.5,714)==index_a_eff:
                 # global_result is a list of tuples (Result, index), in which there are only values with the given scattering length and the index
                 global_result.append([Result(imag_resonance=width, a_eff = a_eff, energy=energy, s_p=0.0), i])
         # CHOOSE THE MINIMUM OR MAXIMUM WIDTH
@@ -146,21 +146,25 @@ def wavefunctions(positions, energies, input:Input, ln_a_eff=0 ,radius=150, p=0.
             min_width = 1e-6
             current_idx=0
             for result, idx in global_result:
-                if result.width<min_width:
+                if result.width<min_width and result.width>0:
                     min_width = result.width
                     current_idx = idx
             print(min_width)
+            final_width = min_width
         else:
-            max_width = 1e-6
+            max_width = 0.0
             current_idx=0
             for result, idx in global_result:
-                if result.width>max_width:
+                print(f"width:{result.width:.2e}")
+                if -result.width>max_width:
                     max_width = result.width
                     current_idx = idx
+                    print(f"max_width:{max_width:.2e}")
             print(max_width)
+            final_width = max_width
         wavefunctions[:,energy_index] = wavefunction(positions, k, eigvecs[:,current_idx], dispersor_set)
     print(len(global_result))
-    return wavefunctions
+    return wavefunctions, final_width
 
 def wavefunction(r_vec, k, eigenvector, dispersors):
     wavefunction = np.zeros(r_vec.shape[0], dtype=np.complex128)
@@ -187,14 +191,23 @@ if __name__ == "__main__":
     with open("./widths.txt", "w") as f:
         f.write("")
     inputs = Input("./clean_code/inputs.json")
-    r_vector = generate_points_lattice(100)
+    sys_size=80
+    r_vector = generate_points_lattice(sys_size+10)
     energies = np.array([0.005])#, 0.06, 0.1])
-    wf = (wavefunctions(r_vector,energies, input=inputs, radius=90))
-    plt.scatter(r_vector[:,0], r_vector[:,1], c=np.log(np.abs(wf[:,0])**2), s=1.5)
+    wf,width = (wavefunctions(r_vector,energies, input=inputs, radius=sys_size, p=0.1))
+    fig, ax = plt.subplots(1,2, figsize=(15,5))
+    scatter_1=ax[0].scatter(r_vector[:,0], r_vector[:,1], c=(np.abs(wf[:,0])**2), s=2)
+    scatter_2=ax[1].scatter(r_vector[:,0], r_vector[:,1], c=np.log10(np.abs(wf[:,0])**2), s=1.5)
     theta = np.linspace(0, 2*np.pi, 100)
-    plt.plot(70*np.cos(theta), 70*np.sin(theta), c="black")
-    plt.colorbar(label="$\ln(|\psi (r)|^2)$")
-    plt.axis("equal")
-    plt.xlabel("x (d)")
-    plt.ylabel("y (d)")
+    ax[0].plot(sys_size*np.cos(theta), sys_size*np.sin(theta), c="black")    
+    ax[1].plot(sys_size*np.cos(theta), sys_size*np.sin(theta), c="black")
+    ax[0].axis("equal")
+    ax[1].axis("equal")
+    fig.colorbar(scatter_1, ax=ax[0], label="$|\psi (r)|^2$")
+    fig.colorbar(scatter_2, ax=ax[1], label="$\log_{10}(|\psi (r)|^2)$")
+    ax[0].set_xlabel("$x/d$")
+    ax[0].set_ylabel("$y/d$")
+    ax[1].set_xlabel("$x/d$")
+    ax[1].set_ylabel("$y/d$")
+    plt.suptitle(f"$\Gamma=$ {width:.2e}")
     plt.show()
